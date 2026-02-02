@@ -1,0 +1,15 @@
+{
+    "Lua.diagnostics.globals": [
+        "gt",
+        "radius",
+        "player"
+    ],
+    "editor.tabCompletion": "off",
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.snippetSuggestions": "none",
+    "editor.suggestOnTriggerCharacters": false,
+    "editor.wordBasedSuggestions": "off",
+    "lua-local.interpreter": "/Users/nelsondsilva/Applications/love.app/Contents/MacOS/love"
+}

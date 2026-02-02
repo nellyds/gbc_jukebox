@@ -1,0 +1,16 @@
+[
+  {
+    "key": "3",
+    "command": "workbench.action.debug.start",
+    "args": {
+      "config": "Debug LÖVE (F6)"
+    }
+  },
+  {
+    "key": "f7",
+    "command": "workbench.action.debug.start",
+    "args": {
+      "config": "Run LÖVE (No Debug)"
+    }
+  }
+]
