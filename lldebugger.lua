@@ -18,4 +18,9 @@ function lldebugger.breakpoint()
     local key = io.read()
 end
 
+function lldebugger.print(arg)
+    print(arg)
+end
+
+
 return lldebugger

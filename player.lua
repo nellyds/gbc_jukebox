@@ -6,94 +6,92 @@ player.dx=0
 player.dy=0
 player.w=16
 player.h=16
-player.game_mode = "pl_move"
+player.state = constants.PL_IDLE
 debug = require('lldebugger')
-dialogue = require('dialogue')
--- Debug function that outputs to multiple places
-local function debug_print(...)
-    local args = {...}
-    local output = table.concat(args, " ")
-    
-    -- Output to LÖVE console
-    print(output)
-    
-    -- Try to output to VSCode if debugger is available
-    if lldebugger and lldebugger.print then
-        lldebugger.print(output)
+local dialogue = require('dialogue')
+local constants = require('constants')
+local game_state_manager = require('game_state_manager')
+local player_state_manager = require('player_state_manager')
+local pl_act = require('game_states/pl_act')
+local player_menu = require('game_states/player_menu')
+local stack_menu = require('game_states/stack_menu')
+local pl_idle = require('player_states/pl_idle')
+local pl_move = require('player_states/pl_move')
+local pl_carry = require('player_states/pl_carry')
+
+function player:player_update(dt)
+    if _G.game.state==constants.PL_ACT then 
+        self:_player_move_input(dt,world)
     end
 end
 
-function player:player_update(dt,world,dialogue)
-    if player.game_mode == "pl_move" then 
-        _player_move_input(dt,world)
+
+function player:_player_move_input(dt,world)
+    if love.keyboard.isDown("up") then
+        player.d = "u"
+        player.dy = -1
+    elseif love.keyboard.isDown("down") then
+        player.d = "d"
+        player.dy = 1
+    else
+        player.dy = 0
     end
-
-end
-
-
-function _player_move_input(dt,world)
-if love.keyboard.isDown("up") then
-            player.d = "u"
-            player.dy = -1
-        elseif love.keyboard.isDown("down") then
-            player.d = "d"
-            player.dy = 1
-        else
-            player.dy = 0
-        end
-        if love.keyboard.isDown("left") then
-            player.d = "l"
-            player.dx = -1
-        elseif love.keyboard.isDown("right") then
-            player.d = "r"
-            player.dx = 1
-        else
-            player.dx = 0
-        end
+    if love.keyboard.isDown("left") then
+        player.d = "l"
+        player.dx = -1
+    elseif love.keyboard.isDown("right") then
+        player.d = "r"
+        player.dx = 1
+    else
+        player.dx = 0
+    end
+    if player.dx ~= 0 or player.dy ~= 0 then
+        player_state_manager:change_state(pl_move)
+    else
+        player_state_manager:change_state(pl_idle)
+    end
 end
 
 function player:handle_keypress(key)
-   if key=="v" and self.game_mode=="dialogue" then
-        table.remove(dialogue.messages,1)
-        if #dialogue.messages == 0 then
-            self.game_mode = "pl_move"
-        end
-    elseif key=="v" and self.game_mode=="pl_move" then
-                    local cols,len
-            if self.d=="u" then
-                cols, len = world:queryRect(player.x,player.y-10,16,16)
-            elseif player.d=="d" then
-            cols, len =world:queryRect(player.x,player.y+10,16,16)
-            elseif player.d=="l" then
-                cols, len =world:queryRect(player.x-8,player.y,16,16)
-            elseif player.d=="r" then
-                cols, len =world:queryRect(player.x+8,player.y,16,16)
+    if key==constants.BUTTON_ONE then
+        if _G.game.state==constants.DIALOGUE then
+            table.remove(dialogue.messages,1)
+            if #dialogue.messages == 0 then
+                game_state_manager:change_state(pl_act)
+                player_state_manager:change_state(pl_idle)
             end
-            _read_message(cols,len,game_mode)
+        elseif _G.game.state==constants.PL_ACT then
+            local cols,len
+                if self.d=="u" then
+                    cols, len = world:queryRect(self.x,self.y-10,16,16)
+                elseif self.d=="d" then
+                    cols, len =world:queryRect(self.x,self.y+10,16,16)
+                elseif self.d=="l" then
+                    cols, len =world:queryRect(self.x-8,self.y,16,16)
+                elseif self.d=="r" then
+                    cols, len =world:queryRect(self.x+8,self.y,16,16)
+                end
+                player:_check_space(cols,len)
+        end
     end
-
 end
 
-function _read_message(cols,len,game_mode) 
+function player:_check_space(cols,len) 
         for i=1,len do
             if cols[i].type=="int_obj" then
-             --   debug.breakpoint()
-                    player.game_mode="dialogue"
-                    dialogue:add_message(player.game_mode.." "..cols[i].text)
-             end
+               player_state_manager:change_state(pl_idle) 
+               game_state_manager:change_state(dialogue)
+                    dialogue:add_message(cols[i].text)
+            elseif cols[i].type==constants.STACK_MENU then
+                   player_state_manager:change_state(pl_idle) 
+                   game_state_manager:change_state(stack_menu)
+                    cols[i].menu_open=true
+            elseif cols[i].type==constants.PLAYER_MENU then
+                    player_state_manager:change_state(pl_idle) 
+                    game_state_manager:change_state(player_menu)
+                    cols[i].menu_open=true
+            end
         end
-end
-
-function player_draw(dt)
- if (player.d== "u") then
-    
- elseif (player.d=="d") then
-
- elseif (player.d=="l") then
- 
-elseif (player.d=="r") then
-
- end
 end
 
 function player:col_filter(player, other)

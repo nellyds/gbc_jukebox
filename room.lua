@@ -14,4 +14,6 @@ function _room_objects:add_object(x,y,message,world)
    table.insert(_room_objects,r)
 end
 
+
+
 return _room_objects

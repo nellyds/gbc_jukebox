@@ -1,12 +1,20 @@
 
 input = {}
+local player = require('player')
+local record_stack = require('record_stack')
+local record_player = require('record_player')
+local constants = require('constants')
+local debug = require('lldebugger')
 
-function input:key_input(dt)
- if love.keyboard.isDown("w") then
-   radius= radius+1    
- elseif love.keyboard.isDown("s") then
-   radius=radius-1
- end
+function input:handle_keypress(key)
+  if _G.game.state==constants.PL_ACT then
+  player:handle_keypress(key)
+  elseif _G.game.state==constants.STACK_MENU then
+  record_stack:handle_keypress(key)
+  elseif _G.game.state==constants.PLAYER_MENU then
+  record_player:handle_keypress(key)
+  end
 end
+
 
 return input
