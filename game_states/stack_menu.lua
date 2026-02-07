@@ -12,10 +12,6 @@ function stack_menu:on_state_exit()
   debug.print("stack_menu on_state_exit")
 end
 
-function stack_menu:update(dt)
-
-end
-
 function stack_menu:get_state()
   return self 
 end

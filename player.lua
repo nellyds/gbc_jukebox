@@ -15,16 +15,47 @@ local player_state_manager = require('player_state_manager')
 local pl_act = require('game_states/pl_act')
 local player_menu = require('game_states/player_menu')
 local stack_menu = require('game_states/stack_menu')
-local pl_idle = require('player_states/pl_idle')
-local pl_move = require('player_states/pl_move')
-local pl_carry = require('player_states/pl_carry')
+local dialogue_menu = require('game_states/dialogue_menu')
 
 function player:player_update(dt)
     if _G.game.state==constants.PL_ACT then 
-        self:_player_move_input(dt,world)
+        if player_state_manager:get_current_state() == constants.PL_CARRY_IDLE then
+            self:_player_carry_input(dt,world)
+        elseif player_state_manager:get_current_state() == constants.PL_CARRY_MOVE then
+            self:_player_carry_move_input(dt,world)
+        elseif player_state_manager:get_current_state() == constants.PL_MOVE then
+            self:_player_move_input(dt,world)
+        elseif player_state_manager:get_current_state() == constants.PL_IDLE then
+            self:_player_move_input(dt,world)
+        end
     end
 end
 
+function player:_player_carry_input(dt,world)
+    if love.keyboard.isDown("up") then
+        player.d = "u"
+        player.dy = -1
+    elseif love.keyboard.isDown("down") then
+        player.d = "d"
+        player.dy = 1
+    else
+        player.dy = 0
+    end
+    if love.keyboard.isDown("left") then
+        player.d = "l"
+        player.dx = -1
+    elseif love.keyboard.isDown("right") then
+        player.d = "r"
+        player.dx = 1
+    else
+        player.dx = 0
+    end
+    if player.dx ~= 0 or player.dy ~= 0 then
+        player_state_manager:change_state(constants.PL_CARRY_MOVE)
+    else
+        player_state_manager:change_state(constants.PL_CARRY_IDLE)
+    end
+end
 
 function player:_player_move_input(dt,world)
     if love.keyboard.isDown("up") then
@@ -46,9 +77,9 @@ function player:_player_move_input(dt,world)
         player.dx = 0
     end
     if player.dx ~= 0 or player.dy ~= 0 then
-        player_state_manager:change_state(pl_move)
+        player_state_manager:change_state(constants.PL_MOVE)
     else
-        player_state_manager:change_state(pl_idle)
+        player_state_manager:change_state(constants.PL_IDLE)
     end
 end
 
@@ -58,7 +89,7 @@ function player:handle_keypress(key)
             table.remove(dialogue.messages,1)
             if #dialogue.messages == 0 then
                 game_state_manager:change_state(pl_act)
-                player_state_manager:change_state(pl_idle)
+                player_state_manager:change_state(constants.PL_IDLE)
             end
         elseif _G.game.state==constants.PL_ACT then
             local cols,len
@@ -79,15 +110,15 @@ end
 function player:_check_space(cols,len) 
         for i=1,len do
             if cols[i].type=="int_obj" then
-               player_state_manager:change_state(pl_idle) 
-               game_state_manager:change_state(dialogue)
+               player_state_manager:change_state(constants.PL_IDLE) 
+               game_state_manager:change_state(dialogue_menu)
                     dialogue:add_message(cols[i].text)
             elseif cols[i].type==constants.STACK_MENU then
-                   player_state_manager:change_state(pl_idle) 
+                   player_state_manager:change_state(constants.PL_IDLE) 
                    game_state_manager:change_state(stack_menu)
                     cols[i].menu_open=true
             elseif cols[i].type==constants.PLAYER_MENU then
-                    player_state_manager:change_state(pl_idle) 
+                    player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(player_menu)
                     cols[i].menu_open=true
             end
@@ -102,4 +133,11 @@ function player:col_filter(player, other)
 
 end
 
+function player:draw_player()
+    love.graphics.setColor(255,255,255)
+    love.graphics.rectangle("fill", self.x,self.y,self.w,self.h)
+    if player.state==constants.PL_CARRY_IDLE or player.state==constants.PL_CARRY_MOVE then
+      love.graphics.circle("fill",self.x,self.y+8,4)
+    end
+end
 return player

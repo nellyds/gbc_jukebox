@@ -1,6 +1,7 @@
 dialogue = {}
 dialogue.messages = {}
 debug = require('lldebugger')
+dialogue.show_confirm = false
 function dialogue:dialogue_update(dt)
   -- This function is called from player_update when key is pressed
 end

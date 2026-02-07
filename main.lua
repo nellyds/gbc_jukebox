@@ -37,7 +37,7 @@ function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.rectangle("fill",player.x,player.y,16,16)
+    player:draw_player()
     for i,l in ipairs(room) do
       love.graphics.setColor(255,0,0)
       love.graphics.rectangle("fill", l.x,l.y,l.w,l.h)

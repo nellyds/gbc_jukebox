@@ -8,9 +8,7 @@ record_stack.text="My stack of records"
 record_stack.type=constants.STACK_MENU
 record_stack.menu_open=false
 local constants = require('constants')
-local pl_idle = require('player_states/pl_idle')
-local pl_move = require('player_states/pl_move')
-local pl_carry = require('player_states/pl_carry')
+
 local game_state_manager = require('game_state_manager')
 local pl_act = require('game_states/pl_act')
 local player_state_manager = require('player_state_manager')
@@ -36,19 +34,26 @@ function record_stack:handle_keypress(key)
     elseif key=="down" and self.menu_select < #_G.songs.list then
         self.menu_select = self.menu_select + 1
     elseif key==constants.BUTTON_ONE then
-      self.menu_open = not self.menu_open
-       player_state_manager:change_state(pl_idle)
-      game_state_manager:change_state(pl_act)
+      record_stack:select_record()
     elseif key==constants.BUTTON_TWO then
       self.menu_open = not self.menu_open
-             player_state_manager:change_state(pl_idle)
+      player_state_manager:change_state(constants.PL__CARRY_IDLE) 
       game_state_manager:change_state(pl_act)
---      game_state_manager:change_state("game", self.state,constants.PL_ACT)
---      game_state_manager:change_state("player",constants.PL_IDLE,constants.PL_MOVE)
-
     end
 end
 
+function record_stack:select_record()
+  if self.menu_select < #_G.songs.list then
+     _G.player.carrying_song = _G.songs.list[self.menu_select]
+     self.menu_open = false
+     player_state_manager:change_state(constants.PL_CARRY_IDLE)
+     game_state_manager:change_state(pl_act)
+  else
+     self.menu_open = false
+     player_state_manager:change_state(constants.PL_IDLE)
+     game_state_manager:change_state(pl_act)
+  end
+end
 
 function record_stack:draw_record_stack()
   love.graphics.setColor(0,255,0) 
