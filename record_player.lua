@@ -11,25 +11,29 @@ record_player.has_record=false
 constants = require('constants')
 record_player.options = {"Play","Stop","Esc"}
 record_player.menu_select=1
-function record_player:playSong(song)
+record_player.has_record=true
+local debug = require('lldebugger')
+
+function record_player:playSong()
     love.audio.stop()
+    debug.print("Playing song: " .. _G.player.carrying_song.name)
+    local song = _G.player.carrying_song.source
     love.audio.play(song)
 end
 
 function record_player:draw_record_player()
-  love.graphics.setColor(0,25,255) 
-  love.graphics.rectangle("fill", self.x, self.y, 16, 16)
-  love.graphics.setColor(255,255,255) 
+  img = love.graphics.newImage("sprites/record_player.png")
+  love.graphics.draw(img,self.x,self.y)
 end
 
 function record_player:draw_player_menu()
     if self.menu_open == true then
         for i=1,#self.options,1 do
             love.graphics.setColor(255,255,255)
-            love.graphics.rectangle("line", 50 + (i-1)*40, 70, 200, 16)
-            love.graphics.printf(self.options[i], 50 + (i-1)*40, 70 , 200, "center")
+            love.graphics.rectangle("line", 50 + (i-1)*150, 70, 150, 20)
+            love.graphics.printf(self.options[i], 50 + (i-1)*150,70,200,"center")
         end
-        love.graphics.circle("fill",40, 74 + (self.menu_select-1)*40,8)
+        love.graphics.circle("fill",50+((self.menu_select-1)*150),70,8)
     end
 end
 
@@ -39,7 +43,11 @@ function record_player:handle_keypress(key)
     elseif key=="right" and self.menu_select < #self.options then
         self.menu_select = self.menu_select + 1
     elseif key==constants.BUTTON_ONE then
-      self.menu_open = not self.menu_open
+        if self.options[self.menu_select] == "Play" then
+            self:playSong()
+        end
+
+        self.menu_open = not self.menu_open
     elseif key==constants.BUTTON_TWO then
       self.menu_open = not self.menu_open
       _G.game.state=constants.PL_ACT

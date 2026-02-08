@@ -6,11 +6,18 @@ record_stack.h=16
 record_stack.menu_select=1
 record_stack.text="My stack of records"
 record_stack.type=constants.STACK_MENU
+record_stack.carrying_song = nil
 record_stack.menu_open=false
 local constants = require('constants')
+local debug = require('lldebugger')
+local stack_state = {
+}
+stack_state.OPENING="opening"
+stack_state.CLOSING="closing"
+stack_state.OPEN="open"
+stack_state.CLOSED="closed"
 
 local game_state_manager = require('game_state_manager')
-local pl_act = require('game_states/pl_act')
 local player_state_manager = require('player_state_manager')
 
 function record_stack:draw_song_menu()
@@ -46,6 +53,7 @@ function record_stack:select_record()
   if self.menu_select < #_G.songs.list then
      _G.player.carrying_song = _G.songs.list[self.menu_select]
      self.menu_open = false
+     debug.print("Selected song: " .. _G.player.carrying_song.name)
      player_state_manager:change_state(constants.PL_CARRY_IDLE)
      game_state_manager:change_state(pl_act)
   else

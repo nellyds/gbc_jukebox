@@ -53,7 +53,9 @@ function player:_player_carry_input(dt,world)
     if player.dx ~= 0 or player.dy ~= 0 then
         player_state_manager:change_state(constants.PL_CARRY_MOVE)
     else
+        if player_state_manager:get_current_state() == constants.PL_CARRY_MOVE then
         player_state_manager:change_state(constants.PL_CARRY_IDLE)
+        end
     end
 end
 
@@ -77,9 +79,12 @@ function player:_player_move_input(dt,world)
         player.dx = 0
     end
     if player.dx ~= 0 or player.dy ~= 0 then
+        
         player_state_manager:change_state(constants.PL_MOVE)
-    else
+    else 
+        if player_state_manager:get_current_state() ~= constants.PL_IDLE then
         player_state_manager:change_state(constants.PL_IDLE)
+        end
     end
 end
 
@@ -116,7 +121,6 @@ function player:_check_space(cols,len)
             elseif cols[i].type==constants.STACK_MENU then
                    player_state_manager:change_state(constants.PL_IDLE) 
                    game_state_manager:change_state(stack_menu)
-                    cols[i].menu_open=true
             elseif cols[i].type==constants.PLAYER_MENU then
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(player_menu)
@@ -137,7 +141,7 @@ function player:draw_player()
     love.graphics.setColor(255,255,255)
     love.graphics.rectangle("fill", self.x,self.y,self.w,self.h)
     if player.state==constants.PL_CARRY_IDLE or player.state==constants.PL_CARRY_MOVE then
-      love.graphics.circle("fill",self.x,self.y+8,4)
+      love.graphics.circle("fill",self.x+8,self.y-16,8)
     end
 end
 return player
