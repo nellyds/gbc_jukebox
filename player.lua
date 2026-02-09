@@ -16,6 +16,8 @@ local pl_act = require('game_states/pl_act')
 local player_menu = require('game_states/player_menu')
 local stack_menu = require('game_states/stack_menu')
 local dialogue_menu = require('game_states/dialogue_menu')
+local img = love.graphics.newImage("sprites/record.png")
+
 
 function player:player_update(dt)
     if _G.game.state==constants.PL_ACT then 
@@ -53,7 +55,7 @@ function player:_player_carry_input(dt,world)
     if player.dx ~= 0 or player.dy ~= 0 then
         player_state_manager:change_state(constants.PL_CARRY_MOVE)
     else
-        if player_state_manager:get_current_state() == constants.PL_CARRY_MOVE then
+        if player_state_manager:get_current_state() ~= constants.PL_CARRY_IDLE then
         player_state_manager:change_state(constants.PL_CARRY_IDLE)
         end
     end
@@ -79,7 +81,6 @@ function player:_player_move_input(dt,world)
         player.dx = 0
     end
     if player.dx ~= 0 or player.dy ~= 0 then
-        
         player_state_manager:change_state(constants.PL_MOVE)
     else 
         if player_state_manager:get_current_state() ~= constants.PL_IDLE then
@@ -141,7 +142,7 @@ function player:draw_player()
     love.graphics.setColor(255,255,255)
     love.graphics.rectangle("fill", self.x,self.y,self.w,self.h)
     if player.state==constants.PL_CARRY_IDLE or player.state==constants.PL_CARRY_MOVE then
-      love.graphics.circle("fill",self.x+8,self.y-16,8)
+      love.graphics.draw(img,self.x,self.y-16)
     end
 end
 return player
