@@ -45,7 +45,7 @@ function record_stack:handle_keypress(key)
     elseif key==constants.BUTTON_TWO then
       self.menu_open = not self.menu_open
       player_state_manager:change_state(constants.PL__CARRY_IDLE) 
-      game_state_manager:change_state(pl_act)
+      game_state_manager:change_state(constants.PL_ACT)
     end
 end
 
@@ -55,11 +55,11 @@ function record_stack:select_record()
      self.menu_open = false
      debug.print("Selected song: " .. _G.player.carrying_song.name)
      player_state_manager:change_state(constants.PL_CARRY_IDLE)
-     game_state_manager:change_state(pl_act)
+     game_state_manager:change_state(constants.PL_ACT)
   else
      self.menu_open = false
      player_state_manager:change_state(constants.PL_IDLE)
-     game_state_manager:change_state(pl_act)
+     game_state_manager:change_state(constants.PL_ACT)
   end
 end
 

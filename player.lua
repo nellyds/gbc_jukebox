@@ -17,7 +17,7 @@ local player_menu = require('game_states/player_menu')
 local stack_menu = require('game_states/stack_menu')
 local dialogue_menu = require('game_states/dialogue_menu')
 local img = love.graphics.newImage("sprites/record.png")
-
+local player_img = love.graphics.newImage("sprites/player_idle_h.png")
 
 function player:player_update(dt)
     if _G.game.state==constants.PL_ACT then 
@@ -94,7 +94,7 @@ function player:handle_keypress(key)
         if _G.game.state==constants.DIALOGUE then
             table.remove(dialogue.messages,1)
             if #dialogue.messages == 0 then
-                game_state_manager:change_state(pl_act)
+                game_state_manager:change_state(constants.PL_ACT)
                 player_state_manager:change_state(constants.PL_IDLE)
             end
         elseif _G.game.state==constants.PL_ACT then
@@ -117,14 +117,14 @@ function player:_check_space(cols,len)
         for i=1,len do
             if cols[i].type=="int_obj" then
                player_state_manager:change_state(constants.PL_IDLE) 
-               game_state_manager:change_state(dialogue_menu)
+               game_state_manager:change_state(constants.DIALOGUE)
                     dialogue:add_message(cols[i].text)
             elseif cols[i].type==constants.STACK_MENU then
                    player_state_manager:change_state(constants.PL_IDLE) 
-                   game_state_manager:change_state(stack_menu)
+                   game_state_manager:change_state(constants.STACK_MENU)
             elseif cols[i].type==constants.PLAYER_MENU then
                     player_state_manager:change_state(constants.PL_IDLE) 
-                    game_state_manager:change_state(player_menu)
+                    game_state_manager:change_state(constants.PL_MENU)
                     cols[i].menu_open=true
             end
         end
@@ -140,7 +140,7 @@ end
 
 function player:draw_player()
     love.graphics.setColor(255,255,255)
-    love.graphics.rectangle("fill", self.x,self.y,self.w,self.h)
+    love.graphics.draw(player_img,self.x,self.y)
     if player.state==constants.PL_CARRY_IDLE or player.state==constants.PL_CARRY_MOVE then
       love.graphics.draw(img,self.x,self.y-16)
     end

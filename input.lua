@@ -14,7 +14,8 @@ function input:handle_keypress(key)
   elseif _G.game.state==constants.PLAYER_MENU then
   record_player:handle_keypress(key)
   elseif _G.game.state==constants.DIALOGUE then
-player:handle_keypress(key)  end
+  dialogue:handle_keypress(key)
+  end
 end
 
 

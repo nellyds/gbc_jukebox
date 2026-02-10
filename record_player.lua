@@ -44,12 +44,12 @@ function record_player:handle_keypress(key)
     elseif key==constants.BUTTON_ONE then
         if self.options[self.menu_select] == "Play" then
             self:playSong()
-            game_state_manager:change_state(pl_act)
+            game_state_manager:change_state(constants.PL_ACT)
             player_state_manager:change_state(constants.PL_IDLE)
         elseif self.options[self.menu_select] == "Stop" then
             love.audio.stop()
         elseif self.options[self.menu_select] == "Esc" then
-            game_state_manager:change_state(pl_act)
+            game_state_manager:change_state(constants.PL_ACT)
             player_state_manager:change_state(constants.PL_CARRY_IDLE)
         end
 

@@ -10,6 +10,8 @@ function love.load()
   constants = require('constants')
   record_player = require('record_player')
   record_stack = require('record_stack')
+game_state_manager = require('game_state_manager')
+player_state_manager = require('player_state_manager')
   player = require('player')
   bump = require ('lib/bump')
   room = require('room') 
@@ -52,8 +54,28 @@ function love.draw()
   end
 
 function _init_world(world,room)
+local object = {
+  {type="message",
+  text="first box"
+  },
+  {type="message",
+  text="a second message"
+  },
+  {type="message",
+  text="a third message"
+  },
+  {
+    type="prompt",
+    text="Do you want to continue?",
+    options={
+      {text="Yes",action=game_state_manager,arg=constants.PLAYER_MENU},
+      {text="No",action=game_state_manager,arg=constants.PL_ACT}
+    }
+  }
+}
+
   world:add(player,player.x,player.y,player.w,player.h)
-  room:add_object(40,100,{"first box","a second message","a third message"},world)
+  room:add_object(40,100,object,world)
   world:add(record_player,record_player.x,record_player.y,record_player.w,record_player.h)
   world:add(record_stack,record_stack.x,record_stack.y,record_stack.w,record_stack.h)
 end
