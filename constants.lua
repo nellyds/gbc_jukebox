@@ -15,4 +15,8 @@ c.CLOSING="closing"
 c.CLOSED="closed"
 c.w=16
 c.h=16
+c.DIR_UP=4
+c.DIR_DOWN=3
+c.DIR_LEFT=2
+c.DIR_RIGHT=1
 return c

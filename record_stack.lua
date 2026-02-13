@@ -11,12 +11,16 @@ record_stack.menu_open=false
 local constants = require('constants')
 local debug = require('lldebugger')
 local stack_state = {
+  OPENING="opening",
+  CLOSING="closing",
+  OPEN="open",
+  CLOSED="closed"
 }
+record_stack.menu_state = stack_state.CLOSED
 record_stack.y_offset=400
-stack_state.OPENING="opening"
-stack_state.CLOSING="closing"
-stack_state.OPEN="open"
-stack_state.CLOSED="closed"
+record_stack.y_offset_close=1000
+record_stack.y_offset_open=400
+
 local util = require('lib.util')
 local game_state_manager = require('game_state_manager')
 local player_state_manager = require('player_state_manager')

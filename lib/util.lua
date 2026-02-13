@@ -16,4 +16,22 @@ function util.draw_rect(rect_x,rect_y,rect_w,rect_h,rect_line, color)
  --   love.graphics.line(rect_x+rect_line+2, rect_y+rect_h-rect_line+1,rect_x+rect_w-rect_line-3,rect_y+rect_h-rect_line)
 end
 
+function util.new_animation(imgUrl,frames,width,height,duration)
+local img = love.graphics.newImage(imgUrl)    
+local animation = {}
+    animation.spriteSheet = image;
+    animation.quads = {};
+
+    for y = 0, image:getHeight() - height, height do
+        for x = 0, image:getWidth() - width, width do
+            table.insert(animation.quads, love.graphics.newQuad(x, y, width, height, image:getDimensions()))
+        end
+    end
+
+    animation.duration = duration or 1
+    animation.currentTime = 0
+
+    return animation
+end
+
 return util
