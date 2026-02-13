@@ -1,8 +1,8 @@
 record_player = {}
 record_player.x = 240
 record_player.y= 240
-record_player.w=16
-record_player.h=16
+record_player.w=64
+record_player.h=64
 record_player.text="My record player"
 record_player.col='cross'
 record_player.type=constants.PLAYER_MENU
@@ -21,7 +21,7 @@ function record_player:playSong()
 end
 
 function record_player:draw_record_player()
-  img = love.graphics.newImage("sprites/record_player.png")
+  img = love.graphics.newImage("sprites/environment/record_player.png")
   love.graphics.draw(img,self.x,self.y)
 end
 
@@ -48,12 +48,12 @@ function record_player:handle_keypress(key)
             player_state_manager:change_state(constants.PL_IDLE)
         elseif self.options[self.menu_select] == "Stop" then
             love.audio.stop()
+            game_state_manager:change_state(constants.PL_ACT)
+            player_state_manager:change_state(constants.PL_CARRY_IDLE)
         elseif self.options[self.menu_select] == "Esc" then
             game_state_manager:change_state(constants.PL_ACT)
             player_state_manager:change_state(constants.PL_CARRY_IDLE)
         end
-
-        self.menu_open = not self.menu_open
     elseif key==constants.BUTTON_TWO then
       self.menu_open = not self.menu_open
       _G.game.state=constants.PL_ACT

@@ -6,7 +6,6 @@ local stack_menu = require('game_states/stack_menu')
 local constants = require('constants')
 local dialogue = require('game_states/dialogue_menu')
 function game_state_manager:change_state(arg)
-    --debug.print("Changing state to: "..arg)
     local next_state = self:get_state(arg)
     local previous_state = self:get_state(_G.game.state)
     if previous_state then

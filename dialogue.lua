@@ -41,8 +41,6 @@ function dialogue:handle_keypress(key)
 
       local selected_option = self.messages[1].options[self.prompt_select]
       if selected_option and selected_option.action then
-        debug.print("Executing action with arg: "..selected_option.arg)
-        debug.print("Action type: "..type(selected_option.action))
         if type(selected_option.action) == "function" then
           selected_option.action(selected_option.arg)
         elseif type(selected_option.action) == "table" and selected_option.action.change_state then

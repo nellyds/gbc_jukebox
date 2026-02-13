@@ -9,6 +9,10 @@ c.PL_CARRY_IDLE="pl_carry_idle"
 c.PL_CARRY_MOVE="pl_carry_move"
 c.BUTTON_ONE="v"
 c.BUTTON_TWO="b"
+c.OPENING="opening"
+c.OPEN="open"
+c.CLOSING="closing"
+c.CLOSED="closed"
 c.w=16
 c.h=16
 return c

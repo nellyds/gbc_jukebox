@@ -4,8 +4,8 @@ player.y = 100
 player.d="r"
 player.dx=0
 player.dy=0
-player.w=16
-player.h=16
+player.w=64
+player.h=64
 player.state = constants.PL_IDLE
 debug = require('lldebugger')
 local dialogue = require('dialogue')
@@ -16,8 +16,9 @@ local pl_act = require('game_states/pl_act')
 local player_menu = require('game_states/player_menu')
 local stack_menu = require('game_states/stack_menu')
 local dialogue_menu = require('game_states/dialogue_menu')
-local img = love.graphics.newImage("sprites/record.png")
-local player_img = love.graphics.newImage("sprites/player_idle_h.png")
+local img = love.graphics.newImage("sprites/environment/record.png")
+--local player_img = love.graphics.newImage("sprites/player_idle_h-sheet.png")
+local walk_r = love.graphics.newImage("sprites/player/player_idle_r.png")
 
 function player:player_update(dt)
     if _G.game.state==constants.PL_ACT then 
@@ -124,7 +125,7 @@ function player:_check_space(cols,len)
                    game_state_manager:change_state(constants.STACK_MENU)
             elseif cols[i].type==constants.PLAYER_MENU then
                     player_state_manager:change_state(constants.PL_IDLE) 
-                    game_state_manager:change_state(constants.PL_MENU)
+                    game_state_manager:change_state(constants.PLAYER_MENU)
                     cols[i].menu_open=true
             end
         end
@@ -140,9 +141,9 @@ end
 
 function player:draw_player()
     love.graphics.setColor(255,255,255)
-    love.graphics.draw(player_img,self.x,self.y)
+    love.graphics.draw(walk_r,self.x,self.y)
     if player.state==constants.PL_CARRY_IDLE or player.state==constants.PL_CARRY_MOVE then
-      love.graphics.draw(img,self.x,self.y-16)
+      love.graphics.draw(img,self.x,self.y-64)
     end
 end
 return player

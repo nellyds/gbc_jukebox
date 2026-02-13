@@ -10,6 +10,7 @@ function player_menu:on_state_enter()
 end
 
 function player_menu:on_state_exit()
+  _G.record_stack.has_record=false
   _G.record_player.menu_open=false
 end
 
