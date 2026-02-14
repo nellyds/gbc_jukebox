@@ -18,11 +18,15 @@ local pl_act = require('game_states/pl_act')
 local player_menu = require('game_states/player_menu')
 local stack_menu = require('game_states/stack_menu')
 local dialogue_menu = require('game_states/dialogue_menu')
-local img = love.graphics.newImage("sprites/environment/record.png")
+local img = love.graphics.newImage("sprites/record.png")
 local idle_sheet = love.graphics.newImage("sprites/player/player_idle_sheet.png")
 local walk_sheet = love.graphics.newImage("sprites/player/player_walk_sheet.png")
+local idle_carry_sheet = love.graphics.newImage("sprites/player/player_carry_idle_sheet.png")
+local walk_carry_sheet = love.graphics.newImage("sprites/player/player_carry_move_sheet.png")
 local idle_g = anim8.newGrid(64, 64, idle_sheet:getWidth(), idle_sheet:getHeight())
 local walk_g = anim8.newGrid(64, 64, walk_sheet:getWidth(), walk_sheet:getHeight())
+local idle_carry_g = anim8.newGrid(64, 64, idle_carry_sheet:getWidth(), idle_carry_sheet:getHeight())
+local walk_carry_g = anim8.newGrid(64, 64, walk_carry_sheet:getWidth(), walk_carry_sheet:getHeight())
 local walk_animations = {
     [constants.DIR_UP] = anim8.newAnimation(walk_g('1-2', constants.DIR_UP), .2),
     [constants.DIR_DOWN] = anim8.newAnimation(walk_g('1-2', constants.DIR_DOWN), .2),
@@ -35,14 +39,26 @@ local idle_animations = {
     [constants.DIR_LEFT] = anim8.newAnimation(idle_g('1-3', constants.DIR_LEFT), .2),
     [constants.DIR_RIGHT] = anim8.newAnimation(idle_g('1-3', constants.DIR_RIGHT), .2)
 }
+local walk_carry_animations = {
+    [constants.DIR_UP] = anim8.newAnimation(walk_carry_g('1-2', constants.DIR_UP), .2),
+    [constants.DIR_DOWN] = anim8.newAnimation(walk_carry_g('1-2', constants.DIR_DOWN), .2),
+    [constants.DIR_LEFT] = anim8.newAnimation(walk_carry_g('1-2', constants.DIR_LEFT), .2),
+    [constants.DIR_RIGHT] = anim8.newAnimation(walk_carry_g('1-2', constants.DIR_RIGHT), .2)
+}
+local idle_carry_animations = {
+    [constants.DIR_UP] = anim8.newAnimation(idle_carry_g('1-1', constants.DIR_UP), .2),
+    [constants.DIR_DOWN] = anim8.newAnimation(idle_carry_g('1-1', constants.DIR_DOWN), .2),
+    [constants.DIR_LEFT] = anim8.newAnimation(idle_carry_g('1-1', constants.DIR_LEFT), .2),
+    [constants.DIR_RIGHT] = anim8.newAnimation(idle_carry_g('1-1', constants.DIR_RIGHT), .2)
+}
 function player:player_update(dt)
     if _G.game.state==constants.PL_ACT then 
         if player_state_manager:get_current_state() == constants.PL_CARRY_IDLE then
             self:_player_carry_input(dt,world)
-            idle_animation:update(dt)
+            idle_carry_animations[self.d]:update(dt)
         elseif player_state_manager:get_current_state() == constants.PL_CARRY_MOVE then
-            self:_player_carry_move_input(dt,world)
-
+            self:_player_carry_input(dt,world)
+            walk_carry_animations[self.d]:update(dt)
         elseif player_state_manager:get_current_state() == constants.PL_MOVE then
             self:_player_move_input(dt,world)
             walk_animations[self.d]:update(dt)
@@ -67,7 +83,7 @@ function player:_player_carry_input(dt,world)
         player.d = constants.DIR_LEFT
         player.dx = -1
     elseif love.keyboard.isDown("right") then
-        player.d = constants.DIR_DOWN
+        player.d = constants.DIR_RIGHT
         player.dx = 1
     else
         player.dx = 0
@@ -119,14 +135,14 @@ function player:handle_keypress(key)
             end
         elseif _G.game.state==constants.PL_ACT then
             local cols,len
-                if self.d=="u" then
-                    cols, len = world:queryRect(self.x,self.y-10,16,16)
-                elseif self.d=="d" then
-                    cols, len =world:queryRect(self.x,self.y+10,16,16)
-                elseif self.d=="l" then
-                    cols, len =world:queryRect(self.x-8,self.y,16,16)
-                elseif self.d=="r" then
-                    cols, len =world:queryRect(self.x+8,self.y,16,16)
+                if self.d==constants.DIR_UP then
+                    cols, len = world:queryRect(self.x,self.y-48,64,64)
+                elseif self.d==constants.DIR_DOWN then
+                    cols, len =world:queryRect(self.x,self.y+48,64,64)
+                elseif self.d==constants.DIR_LEFT then
+                    cols, len =world:queryRect(self.x-48,self.y,64,64)
+                elseif self.d==constants.DIR_RIGHT then
+                    cols, len =world:queryRect(self.x+48,self.y,64,64)
                 end
                 player:_check_space(cols,len)
         end
@@ -134,18 +150,20 @@ function player:handle_keypress(key)
 end
 
 function player:_check_space(cols,len) 
-        for i=1,len do
-            if cols[i].type=="int_obj" then
-               player_state_manager:change_state(constants.PL_IDLE) 
-               game_state_manager:change_state(constants.DIALOGUE)
-                    dialogue:add_message(cols[i].text)
-            elseif cols[i].type==constants.STACK_MENU then
-                   player_state_manager:change_state(constants.PL_IDLE) 
-                   game_state_manager:change_state(constants.STACK_MENU)
-            elseif cols[i].type==constants.PLAYER_MENU then
+    if len ~= nil and len > 0 then
+            for i=1,len do
+                if cols[i].type=="int_obj" then
+                player_state_manager:change_state(constants.PL_IDLE) 
+                game_state_manager:change_state(constants.DIALOGUE)
+                        dialogue:add_message(cols[i].text)
+                elseif cols[i].type==constants.STACK_MENU then
+                    player_state_manager:change_state(constants.PL_IDLE) 
+                    game_state_manager:change_state(constants.STACK_MENU)
+                elseif cols[i].type==constants.PLAYER_MENU then
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.PLAYER_MENU)
                     cols[i].menu_open=true
+                end
             end
         end
 end
@@ -162,15 +180,12 @@ function player:draw_player()
     if player.state==constants.PL_MOVE then
     walk_animations[self.d]:draw(walk_sheet,self.x,self.y)
     elseif player.state==constants.PL_IDLE then
---        love.graphics.setColor(255,255,255)
---        love.graphics.draw(walk_r,self.x,self.y)
     idle_animations[self.d]:draw(idle_sheet,self.x,self.y)
     elseif player.state==constants.PL_CARRY_IDLE then
-    
+    idle_carry_animations[self.d]:draw(idle_carry_sheet,self.x,self.y)
     elseif player.state==constants.PL_CARRY_MOVE then
-    
+    walk_carry_animations[self.d]:draw(walk_carry_sheet,self.x,self.y)
     end
-
     if player.state==constants.PL_CARRY_IDLE or player.state==constants.PL_CARRY_MOVE then
       love.graphics.draw(img,self.x,self.y-64)
     end

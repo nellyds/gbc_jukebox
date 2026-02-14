@@ -1,6 +1,6 @@
 constants = require('constants')
 pl_carry_move =  {}
-pl_carry_move.state = constants.PL_CARRY_IDLE
+pl_carry_move.state = constants.PL_CARRY_MOVE
 debug = require('lldebugger')
 function pl_carry_move:on_state_enter()
   debug.print("pl_carry_move on_state_enter")
