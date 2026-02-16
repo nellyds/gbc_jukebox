@@ -22,6 +22,7 @@ player_state_manager = require('player_state_manager')
   maps = require('assets/maps')
   game= {}
   game.state = constants.PL_ACT
+  game.room = constants.ROOM_1
   songs = require('audio/songs')
   room_generator = require('room_generator')
   songs:load_songs()
@@ -36,14 +37,24 @@ function love.update(dt)
   dialogue:dialogue_update(dt)
   record_stack:stack_update(dt)
   local actualx,actualy,cols,len = world:move(player,player.x+player.dx,player.y+player.dy,
-  player:col_filter(player,other)
+  function(item, other) return other.type end
   )
+for i=1,len do
+ -- debug.print("Collision detected with " .. cols[i].other.type)
+    if cols[i].other.type == "wall" then
+  --    debug.print("Wall collision detected")
+        -- Handle wall collision
+    elseif cols[i].other.type == "door" then
+    --  debug.print("Door collision detected")
+        -- Handle door collision (maybe open it, transition rooms, etc.)
+    end
+end
   player.x=actualx
   player.y=actualy
 end
 
 function love.draw()
-    room_generator:draw_room()
+    room_generator:draw_room(game.room)
     for i,l in ipairs(room_objects) do
       love.graphics.setColor(255,0,0)
       love.graphics.rectangle("fill", l.x,l.y,l.w,l.h)
@@ -80,9 +91,13 @@ local object = {
 }
 
   world:add(player,player.x,player.y,player.w,player.h)
-  game_world:add_walls()
-  --world:add(record_player,record_player.x,record_player.y,record_player.w,record_player.h)
-  --world:add(record_stack,record_stack.x,record_stack.y,record_stack.w,record_stack.h)
+  debug.print("Player added to world")
+  -- Initialize objects before adding walls
+  record_stack.x = 128
+  record_stack.y = 64
+  record_player.x = 192
+  record_player.y = 64
+  game_world:add_walls(game.room)
 end
 
 

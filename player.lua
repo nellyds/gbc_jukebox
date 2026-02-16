@@ -149,17 +149,32 @@ function player:handle_keypress(key)
     end
 end
 
+function player:_get_keys(t)
+    local keys = {}
+    for k, v in pairs(t) do
+        table.insert(keys, k)
+    end
+    return keys
+end
+
 function player:_check_space(cols,len) 
     if len ~= nil and len > 0 then
             for i=1,len do
-                if cols[i].type=="int_obj" then
+                if type(cols[i]) == "table" then
+                --    debug.print("Keys in cols[i]: " .. table.concat(self:_get_keys(cols[i]), ", "))
+                    debug.print("col value: " .. tostring(cols[i].col))
+                   -- debug.print("Direct col access: " .. tostring(cols[i].col))
+                end
+                if cols[i].col=="int_obj" then
                 player_state_manager:change_state(constants.PL_IDLE) 
                 game_state_manager:change_state(constants.DIALOGUE)
                         dialogue:add_message(cols[i].text)
-                elseif cols[i].type==constants.STACK_MENU then
+                elseif cols[i].col==constants.STACK_MENU then
+                    debug.print("Opening stack menu")
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.STACK_MENU)
-                elseif cols[i].type==constants.PLAYER_MENU then
+                    cols[i].menu_open=true
+                elseif cols[i].col==constants.PLAYER_MENU then
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.PLAYER_MENU)
                     cols[i].menu_open=true
@@ -169,8 +184,9 @@ function player:_check_space(cols,len)
 end
 
 function player:col_filter(player, other)
+    debug.print("Collision filter: " .. other.type)
     if other then
-        return other.col
+        return other.type
     else return nil
     end
 

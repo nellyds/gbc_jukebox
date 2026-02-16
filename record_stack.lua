@@ -1,15 +1,18 @@
+local constants = require('constants')
+local debug = require('lldebugger')
+
 record_stack = {}
 record_stack.x=192
 record_stack.y=64
 record_stack.w=64
 record_stack.h=64
+record_stack.anim_time=0
 record_stack.menu_select=1
 record_stack.text="My stack of records"
-record_stack.type=constants.STACK_MENU
+record_stack.type="slide"
+record_stack.col=constants.RECORD_STACK
 record_stack.carrying_song = nil
 record_stack.menu_open=false
-local constants = require('constants')
-local debug = require('lldebugger')
 local stack_state = {
   OPENING="opening",
   CLOSING="closing",
@@ -27,14 +30,20 @@ local player_state_manager = require('player_state_manager')
 local record_stack_img = love.graphics.newImage("sprites/environment/record_stack.png")
 
 function record_stack:stack_update(dt)
+  self.anim_time = self.anim_time + 10
+  if (self.anim_time % 60 == 0) then
+    self.anim_time =0
+  end
   if self.menu_state == constants.OPENING then
-    self.y_offset = self.y_offset - 8
+    if self.anim_time % 20 == 0 then
+      self.y_offset = self.y_offset - 10
+    end
     if self.y_offset <= self.y_offset_open then
       self.menu_state = constants.OPEN
       self.y_offset = self.y_offset_open
     end
   elseif self.menu_state ==constants.CLOSING then 
-    self.y_offset = self.y_offset + 8
+    self.y_offset = self.y_offset + 5
     if self.y_offset >= self.y_offset_close then
       self.y_offset = self.y_offset_close
       self.menu_state = stack_state.CLOSED
