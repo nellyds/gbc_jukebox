@@ -1,6 +1,6 @@
 record_player = {}
-record_player.x = 240
-record_player.y= 240
+record_player.x = 256
+record_player.y= 64
 record_player.w=64
 record_player.h=64
 record_player.text="My record player"

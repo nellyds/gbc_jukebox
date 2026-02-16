@@ -1,7 +1,7 @@
 --room objects
 _room_objects ={}
 
-function _room_objects:add_object(x,y,message,world) 
+function _room_objects:add_object(x,y,message) 
    local r= {}
    r.x=x
    r.y=y
@@ -10,7 +10,7 @@ function _room_objects:add_object(x,y,message,world)
    r.text=message
    r.col='cross'
    r.type='int_obj'
-   world:add(r,x,y,r.w,r.h)
+   --world:add(r,x,y,r.w,r.h)
    table.insert(_room_objects,r)
 end
 

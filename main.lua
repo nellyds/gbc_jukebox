@@ -19,6 +19,7 @@ player_state_manager = require('player_state_manager')
   lldebugger = require('lldebugger')
   dialogue = require('dialogue') 
   input = require('input')
+  maps = require('assets/maps')
   game= {}
   game.state = constants.PL_ACT
   songs = require('audio/songs')
@@ -33,6 +34,7 @@ end
 function love.update(dt)
   player:player_update(dt,world)
   dialogue:dialogue_update(dt)
+  record_stack:stack_update(dt)
   local actualx,actualy,cols,len = world:move(player,player.x+player.dx,player.y+player.dy,
   player:col_filter(player,other)
   )
@@ -78,9 +80,9 @@ local object = {
 }
 
   world:add(player,player.x,player.y,player.w,player.h)
-  --room_objects:add_object(40,100,object,world)
-  world:add(record_player,record_player.x,record_player.y,record_player.w,record_player.h)
-  world:add(record_stack,record_stack.x,record_stack.y,record_stack.w,record_stack.h)
+  game_world:add_walls()
+  --world:add(record_player,record_player.x,record_player.y,record_player.w,record_player.h)
+  --world:add(record_stack,record_stack.x,record_stack.y,record_stack.w,record_stack.h)
 end
 
 

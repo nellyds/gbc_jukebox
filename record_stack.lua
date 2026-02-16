@@ -1,6 +1,6 @@
 record_stack = {}
-record_stack.x=100
-record_stack.y=200
+record_stack.x=192
+record_stack.y=64
 record_stack.w=64
 record_stack.h=64
 record_stack.menu_select=1
@@ -17,14 +17,32 @@ local stack_state = {
   CLOSED="closed"
 }
 record_stack.menu_state = stack_state.CLOSED
-record_stack.y_offset=400
-record_stack.y_offset_close=1000
-record_stack.y_offset_open=400
+record_stack.y_offset=600
+record_stack.y_offset_close=600
+record_stack.y_offset_open=300
 
 local util = require('lib.util')
 local game_state_manager = require('game_state_manager')
 local player_state_manager = require('player_state_manager')
 local record_stack_img = love.graphics.newImage("sprites/environment/record_stack.png")
+
+function record_stack:stack_update(dt)
+  if self.menu_state == constants.OPENING then
+    self.y_offset = self.y_offset - 8
+    if self.y_offset <= self.y_offset_open then
+      self.menu_state = constants.OPEN
+      self.y_offset = self.y_offset_open
+    end
+  elseif self.menu_state ==constants.CLOSING then 
+    self.y_offset = self.y_offset + 8
+    if self.y_offset >= self.y_offset_close then
+      self.y_offset = self.y_offset_close
+      self.menu_state = stack_state.CLOSED
+      self.menu_open = false
+    end
+  end
+end
+
 function record_stack:draw_song_menu()
   if self.menu_open == true then
     local y_offset = 0
@@ -41,7 +59,9 @@ function record_stack:draw_song_menu()
       love.graphics.setColor(255,255,255)
       y_offset = y_offset + 40
     end
-    love.graphics.circle("fill",80, 74 + (self.menu_select-1)*40,8)
+    love.graphics.setColor(255,255,255)
+    love.graphics.printf(">",50,20+ self.y_offset + ((self.menu_select-1)*40),30,"center")
+    love.graphics.setColor(255,255,255)
   else
   end
 end
@@ -54,7 +74,7 @@ function record_stack:handle_keypress(key)
     elseif key==constants.BUTTON_ONE then
       record_stack:select_record()
     elseif key==constants.BUTTON_TWO then
-      self.menu_open = not self.menu_open
+      self.menu_state = constants.CLOSING
       player_state_manager:change_state(constants.PL__CARRY_IDLE) 
       game_state_manager:change_state(constants.PL_ACT)
     end
@@ -63,12 +83,12 @@ end
 function record_stack:select_record()
   if self.menu_select < #_G.songs.list then
      _G.player.carrying_song = _G.songs.list[self.menu_select]
-     self.menu_open = false
-     debug.print("Selected song: " .. _G.player.carrying_song.name)
+    self.menu_state = constants.CLOSING
+
      player_state_manager:change_state(constants.PL_CARRY_IDLE)
      game_state_manager:change_state(constants.PL_ACT)
   else
-     self.menu_open = false
+    self.menu_state = constants.CLOSING
      player_state_manager:change_state(constants.PL_IDLE)
      game_state_manager:change_state(constants.PL_ACT)
   end

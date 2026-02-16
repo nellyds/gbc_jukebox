@@ -5,12 +5,12 @@ local debug = require('lldebugger')
 
 function stack_menu:on_state_enter()
   _G.record_stack.menu_open=true
-  _G.record_stack.state=constants.OPENING
+  _G.record_stack.menu_select=1
+  _G.record_stack.menu_state=constants.OPENING
 end
 
 function stack_menu:on_state_exit()
-  _G.record_stack.menu_open=false
-  _G.record_stack.state=constants.CLOSED
+  _G.record_stack.menu_state=constants.CLOSING
 end
 
 function stack_menu:get_state()
