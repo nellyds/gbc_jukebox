@@ -1,11 +1,12 @@
 player = {}
-player.x = 100
-player.y = 100
+player.x = 256
+player.y = 256
 player.d=constants.DIR_RIGHT
 player.dx=0
 player.dy=0
 player.w=64
 player.h=64
+player.col = "player"
 player.state = constants.PL_IDLE
 
 local anim8 = require('lib/anim8')
@@ -134,6 +135,10 @@ function player:handle_keypress(key)
                 player_state_manager:change_state(constants.PL_IDLE)
             end
         elseif _G.game.state==constants.PL_ACT then
+            local items = world:getItems()
+            for _, item in ipairs(items) do
+                debug.print("Item: " .. item.col)
+            end
             local cols,len
                 if self.d==constants.DIR_UP then
                     cols, len = world:queryRect(self.x,self.y-48,64,64)
@@ -162,19 +167,21 @@ function player:_check_space(cols,len)
             for i=1,len do
                 if type(cols[i]) == "table" then
                 --    debug.print("Keys in cols[i]: " .. table.concat(self:_get_keys(cols[i]), ", "))
-                    debug.print("col value: " .. tostring(cols[i].col))
+           --         debug.print("col value: " .. tostring(cols[i].col))
+             --       debug.print("STACK_MENU constant: " .. constants.STACK_MENU)
                    -- debug.print("Direct col access: " .. tostring(cols[i].col))
                 end
-                if cols[i].col=="int_obj" then
+                local col_val = tostring(cols[i].col)
+                if col_val=="int_obj" then
                 player_state_manager:change_state(constants.PL_IDLE) 
                 game_state_manager:change_state(constants.DIALOGUE)
                         dialogue:add_message(cols[i].text)
-                elseif cols[i].col==constants.STACK_MENU then
+                elseif col_val==constants.RECORD_STACK then
                     debug.print("Opening stack menu")
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.STACK_MENU)
                     cols[i].menu_open=true
-                elseif cols[i].col==constants.PLAYER_MENU then
+                elseif col_val==constants.RECORD_PLAYER then
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.PLAYER_MENU)
                     cols[i].menu_open=true

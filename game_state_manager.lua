@@ -5,6 +5,7 @@ local player_menu = require('game_states/player_menu')
 local stack_menu = require('game_states/stack_menu')
 local constants = require('constants')
 local dialogue = require('game_states/dialogue_menu')
+local room_transition = require('game_states/room_transition')
 function game_state_manager:change_state(arg)
     local next_state = self:get_state(arg)
     local previous_state = self:get_state(_G.game.state)
@@ -20,6 +21,7 @@ entity:on_state_end()
 end
 
 function game_state_manager:get_state(arg)
+
    if arg == constants.PL_ACT then
     return pl_act
    elseif arg == constants.PLAYER_MENU then
@@ -28,6 +30,8 @@ function game_state_manager:get_state(arg)
     return stack_menu
    elseif arg == constants.DIALOGUE then
     return dialogue
+   elseif arg == constants.ROOM_TRANSITION then
+    return room_transition
    end
 end
 

@@ -17,7 +17,6 @@ local util = require('lib/util')
 function game_world:draw_room(room)
    local map_arg = maps[room]['map']
   local count = 0
-  --debug.print("Map size: " .. #map_arg .. "x" .. #map_arg[1])
   for i=1,#map_arg,1 do
     for j=1,#map_arg[1],1 do
       count = count + 1
@@ -47,35 +46,61 @@ function game_world:draw_room(room)
       end
     end
   end
+  local objs = maps[room]['objects']
+  for i=1,#objs,1 do
+    local obj = objs[i]
+    if obj.img then
+      love.graphics.draw(love.graphics.newImage(obj.img), obj.x, obj.y)
+    end
+  end
 end
 
 function game_world:add_walls(room)
+--  debug.print("Adding walls for room: " .. room)
   local map_arg = maps[room]['map']
   local wallvals= {6,7,8,9}
   local doorvals= {10,11}
   for i=1,#map_arg,1 do
     for j=1,#map_arg[1],1 do
-
       local cur = map_arg[i][j]
       if util:table_contains(wallvals, cur) then
-        _G.world:add({type="slide"}, (j-1)*64, (i-1)*64, 64, 64)        
-      end
-      if util:table_contains(doorvals, cur) then
-        _G.world:add({type="cross"}, (j-1)*64, (i-1)*64, 64, 64)        
+        _G.world:add({type="slide", col="wall"}, (j-1)*64, (i-1)*64, 64, 64)        
       end
     end
   end
-  local objs = maps.room_1['objects']
+  local objs = maps[room]['objects']
   for i=1,#objs,1 do
     local obj = objs[i]
     if obj.type == "record_stack" then
-    --  _G.world:add(_G.record_stack,_G.record_stack.x,_G.record_stack.y,64,64)
+     _G.world:add(_G.record_stack,_G.record_stack.x,_G.record_stack.y,64,64)
     elseif obj.type == "record_player" then
- --     debug.print("Record player position: " .. _G.record_player.x .. ", " .. _G.record_player.y)
- --     _G.world:add({type="slide", col=constants.RECORD_PLAYER, x=_G.record_player.x, y=_G.record_player.y, w=64, h=64})
-    --    _G.world:add(_G.record_player,_G.record_player.x,_G.record_player.y,64,64)
+      _G.world:add(_G.record_player,_G.record_player.x,_G.record_player.y,64,64)
+    elseif obj.type == "couch" then
+      _G.world:add({type="slide", col="slide"}, obj.x, obj.y, obj.w, obj.h)
+    elseif obj.type == "table" then
+      _G.world:add({type="slide", col="slide"}, obj.x, obj.y, obj.w, obj.h)
+    elseif obj.type == "bed" then
+      _G.world:add({type="slide", col="slide"}, obj.x, obj.y, obj.w, obj.h)
     end
   end
+  local doors = maps[room]['doors']
+  debug.print("Doors: " .. #doors)
+  for i=1,#doors,1 do
+    local door = doors[i]
+    _G.world:add({type="cross", col="door", destination=door.destination, pcx=door.pcx, pcy=door.pcy}, door.x, door.y, 64, 64)
+    local items = _G.world:getItems()
+  end
+end
+
+function game_world:change_rooms(room)
+  game.room = room
+  local items = _G.world:getItems()
+  for _, item in ipairs(items) do
+    if item.col ~= "player" then
+      _G.world:remove(item)
+    end
+  end
+  self:add_walls(room)
 end
 
 return game_world

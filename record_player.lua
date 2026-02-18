@@ -21,8 +21,7 @@ function record_player:playSong()
 end
 
 function record_player:draw_record_player()
-  img = love.graphics.newImage("sprites/environment/record_player.png")
-  love.graphics.draw(img,self.x,self.y)
+
 end
 
 function record_player:draw_player_menu()

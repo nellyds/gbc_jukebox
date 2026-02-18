@@ -104,7 +104,7 @@ function record_stack:select_record()
 end
 
 function record_stack:draw_record_stack()
-  love.graphics.draw(record_stack_img, self.x, self.y)
+ -- love.graphics.draw(record_stack_img, self.x, self.y)
 end
 
 return record_stack
