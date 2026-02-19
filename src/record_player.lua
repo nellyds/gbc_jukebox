@@ -8,12 +8,31 @@ record_player.col=constants.RECORD_PLAYER
 record_player.type="slide"
 record_player.menu_open=false
 record_player.has_record=false
-constants = require('constants')
+constants = require('src/constants')
 record_player.options = {"Play","Stop","Esc"}
 record_player.menu_select=1
 record_player.has_record=false
-local debug = require('lldebugger')
-
+local debug = require('src/lldebugger')
+local play_active = love.graphics.newImage("sprites/ui/play_active.png")
+local play_inactive = love.graphics.newImage("sprites/ui/play_inactive.png")
+local stop_active = love.graphics.newImage("sprites/ui/stop_active.png")
+local stop_inactive = love.graphics.newImage("sprites/ui/stop_inactive.png")
+local esc_active = love.graphics.newImage("sprites/ui/eject_active.png")
+local esc_inactive = love.graphics.newImage("sprites/ui/eject_inactive.png")
+local menu_ui = {
+    {
+        active = play_active,
+        inactive = play_inactive
+    },
+    {
+        active = stop_active,
+        inactive = stop_inactive
+    },
+    {
+        active = esc_active,
+        inactive = esc_inactive
+    }
+}
 function record_player:playSong()
     love.audio.stop()
     local song = _G.player.carrying_song.source
@@ -26,12 +45,14 @@ end
 
 function record_player:draw_player_menu()
     if self.menu_open == true then
-        for i=1,#self.options,1 do
-            love.graphics.setColor(255,255,255)
-            love.graphics.rectangle("line", 50 + (i-1)*150, 70, 150, 20)
-            love.graphics.printf(self.options[i], 50 + (i-1)*150,70,200,"center")
+        for i=1,#menu_ui,1 do
+            local option = menu_ui[i]
+            if i == self.menu_select then
+                love.graphics.draw(option.active, 180 + (i-1)*34, 70)
+            else
+                love.graphics.draw(option.inactive, 180 + (i-1)*34, 70)
+            end
         end
-        love.graphics.circle("fill",50+((self.menu_select-1)*150),70,8)
     end
 end
 

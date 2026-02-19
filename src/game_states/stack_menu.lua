@@ -1,7 +1,7 @@
 stack_menu = {}
 stack_menu.state = constants.STACK_MENU
-constants = require('constants')
-local debug = require('lldebugger')
+constants = require('src/constants')
+local debug = require('src/lldebugger')
 
 function stack_menu:on_state_enter()
   _G.record_stack.menu_open=true

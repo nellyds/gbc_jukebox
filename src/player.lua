@@ -1,6 +1,6 @@
 player = {}
 player.x = 256
-player.y = 256
+player.y = 270
 player.d=constants.DIR_RIGHT
 player.dx=0
 player.dy=0
@@ -10,15 +10,15 @@ player.col = "player"
 player.state = constants.PL_IDLE
 
 local anim8 = require('lib/anim8')
-debug = require('lldebugger')
-local dialogue = require('dialogue')
-local constants = require('constants')
-local game_state_manager = require('game_state_manager')
-local player_state_manager = require('player_state_manager')
-local pl_act = require('game_states/pl_act')
-local player_menu = require('game_states/player_menu')
-local stack_menu = require('game_states/stack_menu')
-local dialogue_menu = require('game_states/dialogue_menu')
+debug = require('src/lldebugger')
+local dialogue = require('src/dialogue')
+local constants = require('src/constants')
+local game_state_manager = require('src/game_state_manager')
+local player_state_manager = require('src/player_state_manager')
+local pl_act = require('src/game_states/pl_act')
+local player_menu = require('src/game_states/player_menu')
+local stack_menu = require('src/game_states/stack_menu')
+local dialogue_menu = require('src/game_states/dialogue_menu')
 local img = love.graphics.newImage("sprites/record.png")
 local idle_sheet = love.graphics.newImage("sprites/player/player_idle_sheet.png")
 local walk_sheet = love.graphics.newImage("sprites/player/player_walk_sheet.png")
@@ -129,16 +129,14 @@ end
 function player:handle_keypress(key)
     if key==constants.BUTTON_ONE then
         if _G.game.state==constants.DIALOGUE then
+            debug.print("Removing dialogue message")
             table.remove(dialogue.messages,1)
             if #dialogue.messages == 0 then
+                debug.print("No more dialogue messages, returning to PL_ACT")
                 game_state_manager:change_state(constants.PL_ACT)
                 player_state_manager:change_state(constants.PL_IDLE)
             end
         elseif _G.game.state==constants.PL_ACT then
-            local items = world:getItems()
-            for _, item in ipairs(items) do
-                debug.print("Item: " .. item.col)
-            end
             local cols,len
                 if self.d==constants.DIR_UP then
                     cols, len = world:queryRect(self.x,self.y-48,64,64)
@@ -165,23 +163,17 @@ end
 function player:_check_space(cols,len) 
     if len ~= nil and len > 0 then
             for i=1,len do
-                if type(cols[i]) == "table" then
-                --    debug.print("Keys in cols[i]: " .. table.concat(self:_get_keys(cols[i]), ", "))
-           --         debug.print("col value: " .. tostring(cols[i].col))
-             --       debug.print("STACK_MENU constant: " .. constants.STACK_MENU)
-                   -- debug.print("Direct col access: " .. tostring(cols[i].col))
-                end
                 local col_val = tostring(cols[i].col)
                 if col_val=="int_obj" then
                 player_state_manager:change_state(constants.PL_IDLE) 
                 game_state_manager:change_state(constants.DIALOGUE)
-                        dialogue:add_message(cols[i].text)
+                dialogue:add_message(cols[i].text)
                 elseif col_val==constants.RECORD_STACK then
                     debug.print("Opening stack menu")
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.STACK_MENU)
                     cols[i].menu_open=true
-                elseif col_val==constants.RECORD_PLAYER then
+                elseif col_val==constants.RECORD_PLAYER and player.carrying_song ~= nil then
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.PLAYER_MENU)
                     cols[i].menu_open=true

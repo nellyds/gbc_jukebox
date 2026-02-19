@@ -10,13 +10,13 @@ maps.room_1 = {
     {4,9,9,9,9,9,9,9,9,5}, 
   },
   objects= {
-    {type="record_stack", col="slide", x=192,y=64, pcx=7, pcy=3, img="sprites/environment/record_stack.png"},
-    {type="record_player", col="slide",x=256,y=64, pcx=7, pcy=3, img="sprites/environment/record_player.png"},
-    {type="couch",col="slide", x=500, y=180, img="sprites/environment/couch.png",w=64,h=128} ,      
-  {type="table", col="slide",x=256, y=200, img="sprites/environment/table.png",w=128,h=64}
+    {col="record_stack", type="slide", x=192,y=64, img="sprites/environment/record_stack.png"},
+    {col="record_player", type="slide",x=256,y=64, img="sprites/environment/record_player.png"},
+    {col="int_obj",type="slide", text_key="couch", x=500, y=180, img="sprites/environment/couch.png",w=64,h=128} ,      
+    {col="int_obj", type="slide",text_key="table", x=256, y=200, img="sprites/environment/table.png",w=128,h=64}
   },
   doors={
-    {type="door", col="cross", x=0,y=192, destination=constants.ROOM_2, pcx=7.5, pcy=2}
+    {col="door", type="cross", x=0,y=192, destination=constants.ROOM_2, pcx=7.5, pcy=2}
   }
 }
 maps.room_2 = {
@@ -28,10 +28,10 @@ maps.room_2 = {
     {4,9,9,9,9,9,9,9,9,5}, 
   },
   objects= {
-    {type="bed", col="slide", x=4*64, y=2*64, img="sprites/environment/bed.png",w=64,h=128}   
+    {col="int_obj", type="slide", text_key="bed", x=64, y=128, img="sprites/environment/bed.png",w=64,h=128}   
   },
   doors={
-    {type="door", col="cross", x=8*64, y=3*64, destination=constants.ROOM_1, pcx=1.5, pcy=2}
+    {col="door", type="cross", x=8*64, y=3*64, destination=constants.ROOM_1, pcx=1.5, pcy=2}
   }
 }
 return maps

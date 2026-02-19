@@ -1,5 +1,5 @@
-local constants = require('constants')
-local debug = require('lldebugger')
+local constants = require('src/constants')
+local debug = require('src/lldebugger')
 
 record_stack = {}
 record_stack.x=192
@@ -25,8 +25,8 @@ record_stack.y_offset_close=600
 record_stack.y_offset_open=300
 
 local util = require('lib.util')
-local game_state_manager = require('game_state_manager')
-local player_state_manager = require('player_state_manager')
+local game_state_manager = require('src/game_state_manager')
+local player_state_manager = require('src/player_state_manager')
 local record_stack_img = love.graphics.newImage("sprites/environment/record_stack.png")
 
 function record_stack:stack_update(dt)

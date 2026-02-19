@@ -1,7 +1,7 @@
 player_menu = {}
 player_menu.state= constants.PLAYER_MENU
-require('constants')
-local debug = require('lldebugger')
+require('src/constants')
+local debug = require('src/lldebugger')
 
 function player_menu:on_state_enter()
   

@@ -2,7 +2,7 @@ room_transition = {}
 room_transition.state = constants.ROOM_TRANSITION
 room_transition.room = nil
 room_transition.timer = 0
-local constants = require('constants')
+local constants = require('src/constants')
 function room_transition:on_state_enter()
 end
 

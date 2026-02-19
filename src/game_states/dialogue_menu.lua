@@ -1,6 +1,6 @@
-local constants = require('constants')
+local constants = require('src/constants')
 local dialogue_menu = {}
-local debug = require('lldebugger')
+local debug = require('src/lldebugger')
 dialogue_menu.state = constants.DIALOGUE
 
 function dialogue_menu:on_state_enter()

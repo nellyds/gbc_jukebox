@@ -63,7 +63,7 @@ local anim8 = {
   
   local function parseInterval(str)
     if type(str) == "number" then return str,str,1 end
-    str = str:gsub('%s', '') -- remove spaces
+    str = str:gsub('src/%s', '') -- remove spaces
     local min, max = str:match("^(%d+)-(%d+)$")
     assert(min and max, ("Could not parse interval from %q"):format(str))
     min, max = tonumber(min), tonumber(max)

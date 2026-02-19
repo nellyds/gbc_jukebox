@@ -1,9 +1,10 @@
 dialogue = {}
 dialogue.messages = {}
-debug = require('lldebugger')
+debug = require('src/lldebugger')
+local game_state_manager = require('src/game_state_manager')
 dialogue.show_confirm = false
+local constants = require('src/constants')
 dialogue.prompt_select=1
-local constants = require('constants')
 local dialogue_state = {
   DIALOGUE="dialogue",
   PROMPT="prompt"
@@ -53,6 +54,7 @@ function dialogue:handle_keypress(key)
   elseif self.state == dialogue_state.DIALOGUE then
     if key == "return" or key==constants.BUTTON_ONE then
       table.remove(self.messages, 1)
+      game_state_manager:change_state(constants.PL_ACT)
     end
   end
 end
@@ -63,6 +65,7 @@ function dialogue:draw_message()
     love.graphics.rectangle("fill",25,395,2005,50)
     love.graphics.setColor(0,0,0)
     love.graphics.printf(self.messages[1].text,30,400,200,"center")
+    love.graphics.setColor(255,255,255)
 
 end
 function dialogue:draw_prompt()

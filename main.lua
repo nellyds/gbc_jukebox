@@ -7,25 +7,25 @@ end
 
 function love.load()
   game_font = love.graphics.newFont("assets/game_font.ttf",12)
-  love.graphics.setFont(game_font)
-  constants = require('constants')
-  record_player = require('record_player')
-  record_stack = require('record_stack')
-  game_state_manager = require('game_state_manager')
-  room_transition = require('game_states/room_transition')
-  player_state_manager = require('player_state_manager')
-  player = require('player')
+  love.graphics.setFont(game_font)  
+  constants = require('src/constants')
+  record_player = require('src/record_player')
+  record_stack = require('src/record_stack')
+  game_state_manager = require('src/game_state_manager')
+  room_transition = require('src/game_states/room_transition')
+  player_state_manager = require('src/player_state_manager')
+  player = require('src/player')
   bump = require ('lib/bump')
-  room_objects = require('room_objects') 
-  lldebugger = require('lldebugger')
-  dialogue = require('dialogue') 
-  input = require('input')
+  room_objects = require('/src/room_objects') 
+  lldebugger = require('src/lldebugger')
+  dialogue = require('src/dialogue') 
+  input = require('src/input')
   maps = require('assets/maps')
   game= {}
   game.state = constants.PL_ACT
   game.room = constants.ROOM_1
   songs = require('audio/songs')
-  game_world = require('game_world')
+  game_world = require('src/game_world')
   songs:load_songs()
   local count = 0
   world = bump.newWorld(50)
@@ -55,7 +55,7 @@ for i=1,len do
         
       end
       game_world:change_rooms(cols[i].other.destination)
-      debug.print("Player position after change: " .. player.x .. ", " .. player.y)
+    --  debug.print("Player position after change: " .. player.x .. ", " .. player.y)
       world:update(player,cols[i].other.pcx*64,cols[i].other.pcy*64)
       return
     end
@@ -78,6 +78,7 @@ function love.draw()
     record_stack:draw_record_stack()
     record_stack:draw_song_menu()
     dialogue:dialogue_draw(dt)
+    record_player:draw_player_menu()
   end
 
 function _init_world(world,room_objects)

@@ -1,5 +1,6 @@
 game_world = {}
 local maps = require('assets/maps')
+local texts = require('assets/texts')
 local floor = love.graphics.newImage("sprites/environment/floor.png")
 local d_wall = love.graphics.newImage("sprites/environment/d_wall.png")
 local u_wall = love.graphics.newImage("sprites/environment/u_wall.png")
@@ -71,23 +72,19 @@ function game_world:add_walls(room)
   local objs = maps[room]['objects']
   for i=1,#objs,1 do
     local obj = objs[i]
-    if obj.type == "record_stack" then
+    if obj.col == "record_stack" then
      _G.world:add(_G.record_stack,_G.record_stack.x,_G.record_stack.y,64,64)
-    elseif obj.type == "record_player" then
+    elseif obj.col == "record_player" then
       _G.world:add(_G.record_player,_G.record_player.x,_G.record_player.y,64,64)
-    elseif obj.type == "couch" then
-      _G.world:add({type="slide", col="slide"}, obj.x, obj.y, obj.w, obj.h)
-    elseif obj.type == "table" then
-      _G.world:add({type="slide", col="slide"}, obj.x, obj.y, obj.w, obj.h)
-    elseif obj.type == "bed" then
-      _G.world:add({type="slide", col="slide"}, obj.x, obj.y, obj.w, obj.h)
+    elseif obj.col == "int_obj" then
+      _G.world:add({type=obj.type, col=obj.col, text=texts[obj.text_key]}, obj.x, obj.y, obj.w, obj.h)
     end
   end
   local doors = maps[room]['doors']
   debug.print("Doors: " .. #doors)
   for i=1,#doors,1 do
     local door = doors[i]
-    _G.world:add({type="cross", col="door", destination=door.destination, pcx=door.pcx, pcy=door.pcy}, door.x, door.y, 64, 64)
+    _G.world:add({type=door.type, col=door.col, destination=door.destination, pcx=door.pcx, pcy=door.pcy}, door.x, door.y, 64, 64)
     local items = _G.world:getItems()
   end
 end

@@ -1,7 +1,7 @@
-constants = require('constants')
+constants = require('src/constants')
 pl_carry_move =  {}
 pl_carry_move.state = constants.PL_CARRY_MOVE
-debug = require('lldebugger')
+debug = require('src/lldebugger')
 function pl_carry_move:on_state_enter()
 end
 function pl_carry_move:on_state_exit()
