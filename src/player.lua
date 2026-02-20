@@ -165,11 +165,10 @@ function player:_check_space(cols,len)
             for i=1,len do
                 local col_val = tostring(cols[i].col)
                 if col_val=="int_obj" then
-                player_state_manager:change_state(constants.PL_IDLE) 
-                game_state_manager:change_state(constants.DIALOGUE)
-                dialogue:add_message(cols[i].text)
+                    player_state_manager:change_state(constants.PL_IDLE) 
+                    game_state_manager:change_state(constants.DIALOGUE)
+                    dialogue:add_message(cols[i].text)
                 elseif col_val==constants.RECORD_STACK then
-                    debug.print("Opening stack menu")
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.STACK_MENU)
                     cols[i].menu_open=true
@@ -183,7 +182,6 @@ function player:_check_space(cols,len)
 end
 
 function player:col_filter(player, other)
-    debug.print("Collision filter: " .. other.type)
     if other then
         return other.type
     else return nil

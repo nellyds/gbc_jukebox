@@ -84,7 +84,7 @@ function game_world:add_walls(room)
   debug.print("Doors: " .. #doors)
   for i=1,#doors,1 do
     local door = doors[i]
-    _G.world:add({type=door.type, col=door.col, destination=door.destination, pcx=door.pcx, pcy=door.pcy}, door.x, door.y, 64, 64)
+    _G.world:add({type=door.type, col=door.col, destination=door.destination, pcx=door.pcx, pcy=door.pcy}, door.x, door.y, 72, 64)
     local items = _G.world:getItems()
   end
 end

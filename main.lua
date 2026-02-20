@@ -67,18 +67,18 @@ end
 end
 
 function love.draw()
+
     game_world:draw_room(game.room)
-    for i,l in ipairs(room_objects) do
-      love.graphics.setColor(255,0,0)
-      love.graphics.rectangle("fill", l.x,l.y,l.w,l.h)
-      love.graphics.setColor(255,255,255)
+        if game.state == constants.ROOM_TRANSITION then
+      transition:draw_room_transition()
     end
-    player:draw_player()
     love.graphics.setColor(255,255,255)
     record_stack:draw_record_stack()
     record_stack:draw_song_menu()
     dialogue:dialogue_draw(dt)
+
     record_player:draw_player_menu()
+    player:draw_player()
   end
 
 function _init_world(world,room_objects)
