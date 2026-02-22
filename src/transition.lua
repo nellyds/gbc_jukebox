@@ -22,6 +22,7 @@ function transition:draw_room_transition()
   end
   
   if transition.state == constants.OPENING then
+
     love.graphics.setColor(0, 0, 0, 1)
     
     for i = 0, num_strips - 1 do
@@ -31,6 +32,7 @@ function transition:draw_room_transition()
     end
     
   elseif transition.state == constants.CLOSED then
+    -- Fully black screen
     love.graphics.setColor(0, 0, 0, 1)
     love.graphics.rectangle("fill", 0, 0, width, height)
   end

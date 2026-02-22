@@ -12,6 +12,9 @@ constants = require('src/constants')
 record_player.options = {"Play","Stop","Esc"}
 record_player.menu_select=1
 record_player.has_record=false
+local cursor_select = love.audio.newSource("audio/cursor_select.wav", "static")
+local cursor_move = love.audio.newSource("audio/cursor_move.wav", "static")
+local put_away = love.audio.newSource("audio/put_away.wav", "static")
 local debug = require('src/lldebugger')
 local play_active = love.graphics.newImage("sprites/ui/play_active.png")
 local play_inactive = love.graphics.newImage("sprites/ui/play_inactive.png")
@@ -59,8 +62,10 @@ end
 function record_player:handle_keypress(key)
     if key=="left" and self.menu_select > 1 then
         self.menu_select = self.menu_select - 1
+        love.audio.play(cursor_move)
     elseif key=="right" and self.menu_select < #self.options then
         self.menu_select = self.menu_select + 1
+        love.audio.play(cursor_move)
     elseif key==constants.BUTTON_ONE then
         if self.options[self.menu_select] == "Play" then
             self:playSong()
@@ -68,9 +73,11 @@ function record_player:handle_keypress(key)
             player_state_manager:change_state(constants.PL_IDLE)
         elseif self.options[self.menu_select] == "Stop" then
             love.audio.stop()
+            love.audio.play(put_away)
             game_state_manager:change_state(constants.PL_ACT)
             player_state_manager:change_state(constants.PL_CARRY_IDLE)
         elseif self.options[self.menu_select] == "Esc" then
+            love.audio.play(put_away)
             game_state_manager:change_state(constants.PL_ACT)
             player_state_manager:change_state(constants.PL_CARRY_IDLE)
         end

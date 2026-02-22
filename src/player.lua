@@ -8,7 +8,6 @@ player.w=64
 player.h=64
 player.col = "player"
 player.state = constants.PL_IDLE
-
 local anim8 = require('lib/anim8')
 debug = require('src/lldebugger')
 local dialogue = require('src/dialogue')

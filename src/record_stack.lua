@@ -19,6 +19,8 @@ local stack_state = {
   OPEN="open",
   CLOSED="closed"
 }
+local cursor_move = love.audio.newSource("audio/cursor_move.wav", "static")
+local cursor_select = love.audio.newSource("audio/cursor_select.wav", "static")
 record_stack.menu_state = stack_state.CLOSED
 record_stack.y_offset=600
 record_stack.y_offset_close=600
@@ -78,12 +80,15 @@ end
 function record_stack:handle_keypress(key)
     if key=="up" and self.menu_select > 1 then
         self.menu_select = self.menu_select - 1
+        love.audio.play(cursor_move)
     elseif key=="down" and self.menu_select < #_G.songs.list then
         self.menu_select = self.menu_select + 1
+        love.audio.play(cursor_move)
     elseif key==constants.BUTTON_ONE then
       record_stack:select_record()
     elseif key==constants.BUTTON_TWO then
       self.menu_state = constants.CLOSING
+      love.audio.play(cursor_select)
       player_state_manager:change_state(constants.PL__CARRY_IDLE) 
       game_state_manager:change_state(constants.PL_ACT)
     end
@@ -93,11 +98,12 @@ function record_stack:select_record()
   if self.menu_select < #_G.songs.list then
      _G.player.carrying_song = _G.songs.list[self.menu_select]
     self.menu_state = constants.CLOSING
-
+    love.audio.play(cursor_select)
      player_state_manager:change_state(constants.PL_CARRY_IDLE)
      game_state_manager:change_state(constants.PL_ACT)
   else
     self.menu_state = constants.CLOSING
+    love.audio.play(cursor_select)
      player_state_manager:change_state(constants.PL_IDLE)
      game_state_manager:change_state(constants.PL_ACT)
   end

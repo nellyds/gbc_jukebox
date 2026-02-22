@@ -38,7 +38,7 @@ function love.update(dt)
   dialogue:dialogue_update(dt)
   record_stack:stack_update(dt)
   if game.state == constants.ROOM_TRANSITION then
-    room_transition:update(dt)
+    room_transition:update(dt, game.room)
   end
   if game.state ~= constants.ROOM_TRANSITION then
     local actualx,actualy,cols,len = world:move(player,player.x+player.dx,player.y+player.dy,
@@ -47,15 +47,12 @@ function love.update(dt)
 for i=1,len do
     if cols[i].other.type == "slide" then
     elseif cols[i].other.col == constants.DOOR then
-      game_state_manager:change_state(constants.ROOM_TRANSITION)
+      room_transition:set_dest(cols[i].other.destination)
+      game_state_manager:change_state(constants.ROOM_TRANSITION )
       if cols[i].other.pcx and cols[i].other.pcy then
-        debug.print("Setting player position to: " .. cols[i].other.pcx*64 .. ", " .. tostring(cols[i].other.pcy*64).." in  " .. tostring(cols[i].other.destination))
         player.x = cols[i].other.pcx*64
         player.y = cols[i].other.pcy*64
-        
       end
-      game_world:change_rooms(cols[i].other.destination)
-    --  debug.print("Player position after change: " .. player.x .. ", " .. player.y)
       world:update(player,cols[i].other.pcx*64,cols[i].other.pcy*64)
       return
     end
@@ -69,7 +66,8 @@ end
 function love.draw()
 
     game_world:draw_room(game.room)
-        if game.state == constants.ROOM_TRANSITION then
+        player:draw_player()
+    if game.state == constants.ROOM_TRANSITION then
       transition:draw_room_transition()
     end
     love.graphics.setColor(255,255,255)
@@ -78,7 +76,6 @@ function love.draw()
     dialogue:dialogue_draw(dt)
 
     record_player:draw_player_menu()
-    player:draw_player()
   end
 
 function _init_world(world,room_objects)

@@ -1,19 +1,14 @@
 game_world = {}
 local maps = require('assets/maps')
 local texts = require('assets/texts')
-local floor = love.graphics.newImage("sprites/environment/floor.png")
-local d_wall = love.graphics.newImage("sprites/environment/d_wall.png")
-local u_wall = love.graphics.newImage("sprites/environment/u_wall.png")
-local l_wall = love.graphics.newImage("sprites/environment/l_wall.png")
-local r_wall = love.graphics.newImage("sprites/environment/r_wall.png")
-local dl_corner = love.graphics.newImage("sprites/environment/dl_corner.png")
-local dr_corner = love.graphics.newImage("sprites/environment/dr_corner.png")
-local ul_corner = love.graphics.newImage("sprites/environment/ul_corner.png")
-local ur_corner = love.graphics.newImage("sprites/environment/ur_corner.png")
+local wall = love.graphics.newImage("sprites/environment/l_wall.png")
+local corner = love.graphics.newImage("sprites/environment/ul_corner.png")
 local l_door = love.graphics.newImage("sprites/environment/l_door.png")
 local r_door = love.graphics.newImage("sprites/environment/r_door.png")
 local u_door = love.graphics.newImage("sprites/environment/u_door.png")
 local d_door = love.graphics.newImage("sprites/environment/d_door.png")
+local floor = love.graphics.newImage("sprites/environment/floor.png")
+local edge = love.graphics.newImage("sprites/environment/edge.png")
 local util = require('lib/util')
 function game_world:draw_room(room)
    local map_arg = maps[room]['map']
@@ -23,27 +18,51 @@ function game_world:draw_room(room)
       count = count + 1
       local cur = map_arg[i][j]
       if cur == 7 then
-        love.graphics.draw(l_wall, (j-1)*64, (i-1)*64)
+        --left wall
+        love.graphics.draw(wall, (j-1)*64, (i-1)*64)
       elseif cur ==6 then
-        love.graphics.draw(u_wall, (j-1)*64, (i-1)*64)
+        --top wall
+        love.graphics.draw(wall, (j-1)*64, (i-1)*64,math.rad(90),1,1,0,64)
       elseif cur ==9 then
-        love.graphics.draw(d_wall, (j-1)*64, (i-1)*64)
+        --bottom wall
+        love.graphics.draw(wall, (j-1)*64, (i-1)*64,math.rad(270),1,1,64,0)
       elseif cur ==8 then
-        love.graphics.draw(r_wall, (j-1)*64, (i-1)*64)      
+        --right wall
+        love.graphics.draw(wall, (j-1)*64, (i-1)*64,math.rad(180),1,1,64,64)      
       elseif cur == 2 then
-        love.graphics.draw(ul_corner, (j-1)*64, (i-1)*64)
+        --top left
+        love.graphics.draw(corner, (j-1)*64, (i-1)*64)
       elseif cur == 3 then
-        love.graphics.draw(ur_corner, (j-1)*64, (i-1)*64) 
+        --top right
+        love.graphics.draw(corner, (j-1)*64, (i-1)*64, math.rad(90),1,1,0,64) 
       elseif cur == 4 then
-        love.graphics.draw(dl_corner, (j-1)*64, (i-1)*64)
+        --bottom left
+        love.graphics.draw(corner, (j-1)*64, (i-1)*64, math.rad(270),1,1,64,0)
       elseif cur == 5 then
-        love.graphics.draw(dr_corner, (j-1)*64, (i-1)*64)
+        --bottom right
+        love.graphics.draw(corner, (j-1)*64, (i-1)*64,math.rad(180),1,1,64,64)
       elseif cur == 1 then
         love.graphics.draw(floor, (j-1)*64, (i-1)*64)
       elseif cur == 10 then
         love.graphics.draw(l_door, (j-1)*64, (i-1)*64)
       elseif cur == 11 then
         love.graphics.draw(r_door, (j-1)*64, (i-1)*64)
+      elseif cur == 12 then
+        love.graphics.draw(u_door, (j-1)*64, (i-1)*64)
+      elseif cur == 13 then
+        love.graphics.draw(d_door, (j-1)*64, (i-1)*64)
+      elseif cur == 14 then
+        --bottom left
+        love.graphics.draw(edge, (j-1)*64, (i-1)*64)
+      elseif cur == 15 then
+        --bottom right
+        love.graphics.draw(edge, (j-1)*64, (i-1)*64, math.rad(90),1,1,0,64)
+      elseif cur == 16 then
+        --top left
+        love.graphics.draw(edge, (j-1)*64, (i-1)*64, math.rad(180),1,1,64,64)
+      elseif cur == 17 then
+        --top right
+        love.graphics.draw(edge, (j-1)*64, (i-1)*64, math.rad(270),1,1,64,0)
       end
     end
   end
