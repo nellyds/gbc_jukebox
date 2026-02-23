@@ -37,6 +37,7 @@ function love.update(dt)
   player:player_update(dt,world)
   dialogue:dialogue_update(dt)
   record_stack:stack_update(dt)
+  record_player:record_player_update(dt)
   if game.state == constants.ROOM_TRANSITION then
     room_transition:update(dt, game.room)
   end

@@ -11,7 +11,17 @@ record_player.has_record=false
 constants = require('src/constants')
 record_player.options = {"Play","Stop","Esc"}
 record_player.menu_select=1
+record_player.anim_time=0
 record_player.has_record=false
+record_player.menu_y_offset = -20
+record_player.menu_y_offset_close=-20
+record_player.menu_y_offset_open=58
+local menu_state = {
+      OPENING="opening",
+  CLOSING="closing",
+  OPEN="open",
+  CLOSED="closed"
+}
 local cursor_select = love.audio.newSource("audio/cursor_select.wav", "static")
 local cursor_move = love.audio.newSource("audio/cursor_move.wav", "static")
 local put_away = love.audio.newSource("audio/put_away.wav", "static")
@@ -22,6 +32,7 @@ local stop_active = love.graphics.newImage("sprites/ui/stop_active.png")
 local stop_inactive = love.graphics.newImage("sprites/ui/stop_inactive.png")
 local esc_active = love.graphics.newImage("sprites/ui/eject_active.png")
 local esc_inactive = love.graphics.newImage("sprites/ui/eject_inactive.png")
+local util = require('lib/util')
 local menu_ui = {
     {
         active = play_active,
@@ -41,19 +52,46 @@ function record_player:playSong()
     local song = _G.player.carrying_song.source
     love.audio.play(song)
 end
-
-function record_player:draw_record_player()
-
+function record_player:record_player_update(dt)
+  self.anim_time = self.anim_time + 10
+  if (self.anim_time % 30 == 0) then
+    self.anim_time =0
+  end
+  if self.menu_state == constants.OPENING then
+    debug.print("Opening")
+    if self.anim_time % 30 == 0 then
+        debug.print("Menu y offset: " .. self.menu_y_offset)
+      self.menu_y_offset = self.menu_y_offset + 10
+      debug.print("Menu y offset after increment: " .. self.menu_y_offset)
+    end
+    if self.menu_y_offset >= self.menu_y_offset_open then
+      debug.print("Opening complete")
+      debug.print("Menu y offset: " .. self.menu_y_offset)
+      self.menu_state = constants.OPEN
+      self.menu_y_offset = self.menu_y_offset_open
+    end
+  elseif self.menu_state ==constants.CLOSING then 
+    debug.print("Closing")
+    if self.anim_time % 60 == 0 then
+      self.menu_y_offset = self.menu_y_offset - 10
+    end
+    if self.menu_y_offset <= self.menu_y_offset_close then
+      self.menu_y_offset = self.menu_y_offset_close
+      self.menu_state = constants.CLOSED
+      self.menu_open = false
+    end
+  end
 end
 
 function record_player:draw_player_menu()
     if self.menu_open == true then
+        util.draw_rect(170, self.menu_y_offset, 120, 56, 6,{r=100,g=165,b=255})
         for i=1,#menu_ui,1 do
             local option = menu_ui[i]
             if i == self.menu_select then
-                love.graphics.draw(option.active, 180 + (i-1)*34, 70)
+                love.graphics.draw(option.active, 180 + (i-1)*34, self.menu_y_offset + 12)
             else
-                love.graphics.draw(option.inactive, 180 + (i-1)*34, 70)
+                love.graphics.draw(option.inactive, 180 + (i-1)*34, self.menu_y_offset + 12)
             end
         end
     end
