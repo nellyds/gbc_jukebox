@@ -79,7 +79,9 @@ function dialogue:handle_keypress(key)
   elseif self.state == dialogue_state.DIALOGUE then
     if key == "return" or key==constants.BUTTON_ONE then
       table.remove(self.messages, 1)
-      _G.game_state_manager:change_state(constants.PL_ACT)
+      if #self.messages == 0 then
+        _G.game_state_manager:change_state(constants.PL_ACT)
+      end
     end
   end
 end
@@ -88,7 +90,7 @@ function dialogue:draw_message()
     self.show_confirm = true
     love.graphics.setColor(255,255,255)
     love.graphics.setFont(love.graphics.newFont("assets/game_font.ttf",18))
-    love.graphics.printf(self.messages[1].text,20,self.y_offset+22,300,"center")
+    love.graphics.printf(self.messages[1].text,20,self.y_offset+22,620,"center")
     love.graphics.setColor(255,255,255)
     love.graphics.setFont(game_font)
 
