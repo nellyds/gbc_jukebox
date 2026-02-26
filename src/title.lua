@@ -12,7 +12,13 @@ function title:draw()
   if title.phase ==0 then
     love.graphics.print("Made by Neltron3030 in Love2d and Famitracker", 80, 320)
   elseif title.phase ==1 then
-    love.graphics.draw(title_img, 0, 0)
+            love.graphics.setColor(0,0,255)
+        love.graphics.print("Press Space to start", 20, 320)
+    love.graphics.setColor(255,255,255)
+        love.graphics.draw(title_img, 0, 0)
+        love.graphics.setColor(0,0,0)
+        love.graphics.print("Press Space to start", 240, 610)
+    love.graphics.setColor(255,255,255)
   end
 end
 
@@ -33,7 +39,7 @@ if title.phase == 2 then
 end
 
 function title:handle_keypress(key)
-  if key == "return" then
+  if key == "space" then
     title.anim_state = constants.OPENING
     transitions:add_transition(colors.white, 120, constants.IN)
   end

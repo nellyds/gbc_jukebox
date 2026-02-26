@@ -1,28 +1,28 @@
 texts ={}
 texts.book = {}
 texts.couch = {  {type="message",
-  text="This is my couch"
+  text="I just added things so this room wouldn't look empty."
   },}
 texts.table = {
   {type="message",
-  text="Note the coffee table has books on it."
+  text="I had the idea to release an EP of famitracker covers via a game a few years ago."
   },
   {
     type="message",
-    text="I have no where else to say this, but I hate Powell's Book Store."
+    text="At the time, I was too busy to make it, but now I don't care about my job anymore."
   },
   {
     type="message",
-    text="'it's the size of a football field' yes dumbass, it is big which doesn't ..."
+    text="I actually am working on a bigger game at the moment, but ripped out part of the code to make this."
   },
   {
     type="message",
-    text="make it easier to find a book you want to buy.  You know what does?  AMAZON."
+    text="So, walk over to the record crate, pick up a record, and play it."
   },
 }
 texts.bed = {
   {type="message",
-  text="This is my bed"
+  text="This is a bleak portrait of existence here, no?"
   },
 }
 

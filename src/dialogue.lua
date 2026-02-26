@@ -90,7 +90,7 @@ function dialogue:draw_message()
     self.show_confirm = true
     love.graphics.setColor(255,255,255)
     love.graphics.setFont(love.graphics.newFont("assets/game_font.ttf",18))
-    love.graphics.printf(self.messages[1].text,20,self.y_offset+22,620,"center")
+    love.graphics.printf(self.messages[1].text,20,self.y_offset+22,600,"center")
     love.graphics.setColor(255,255,255)
     love.graphics.setFont(game_font)
 
