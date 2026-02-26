@@ -88,7 +88,7 @@ function record_stack:handle_keypress(key)
       record_stack:select_record()
     elseif key==constants.BUTTON_TWO then
       self.menu_state = constants.CLOSING
-      love.audio.play(cursor_select)
+   love.audio.play(cursor_select)
       player_state_manager:change_state(constants.PL__CARRY_IDLE) 
       game_state_manager:change_state(constants.PL_ACT)
     end

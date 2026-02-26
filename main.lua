@@ -6,6 +6,7 @@ end
 
 
 function love.load()
+  transitions = require('src/transitions')
   title_img = love.graphics.newImage("sprites/ui/title.png")
   game_font = love.graphics.newFont("assets/game_font.ttf",12)
   love.graphics.setFont(game_font)  
@@ -37,6 +38,7 @@ function love.load()
 end
 
 function love.update(dt)
+  transitions:update()
   if game.state ~= constants.TITLE_MENU then
     game_loop:update(dt)
   else
@@ -48,10 +50,10 @@ function love.draw()
   if game.state == constants.TITLE_MENU then
     title:draw()
   else
-    title:draw()
     game_loop:draw()
     
   end
+    transitions:draw()
 end
 
 function _init_world(world,room_objects)

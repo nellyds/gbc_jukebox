@@ -60,18 +60,13 @@ function record_player:record_player_update(dt)
   if self.menu_state == constants.OPENING then
     debug.print("Opening")
     if self.anim_time % 30 == 0 then
-        debug.print("Menu y offset: " .. self.menu_y_offset)
       self.menu_y_offset = self.menu_y_offset + 10
-      debug.print("Menu y offset after increment: " .. self.menu_y_offset)
     end
     if self.menu_y_offset >= self.menu_y_offset_open then
-      debug.print("Opening complete")
-      debug.print("Menu y offset: " .. self.menu_y_offset)
       self.menu_state = constants.OPEN
       self.menu_y_offset = self.menu_y_offset_open
     end
   elseif self.menu_state ==constants.CLOSING then 
-    debug.print("Closing")
     if self.anim_time % 60 == 0 then
       self.menu_y_offset = self.menu_y_offset - 10
     end

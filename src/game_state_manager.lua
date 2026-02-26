@@ -12,6 +12,7 @@ function game_state_manager:change_state(arg)
     local previous_state = self:get_state(_G.game.state)
     debug.print("Changing state from " .. previous_state.state .. " to " .. next_state.state)
     if previous_state then
+        debug.print("Previous state: " .. previous_state.state)
         previous_state:on_state_exit()
     end
     _G.game.state = next_state.state

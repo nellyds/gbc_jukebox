@@ -18,14 +18,19 @@ function transitions:update()
 end
 
 function transitions:add_transition(color, duration,dir)
+  local a =0
+  if dir == "out" then
+    a = 1
+  end
+  local t = {color=color, duration=duration, increment =0, anim_time=0,dir=dir,a=a}
   table.insert(transitions.sequence, 
-  {color=color, duration=duration, increment =0, anim_time=0,dir=dir})
+  t)
 end
 
 function transitions:draw()
   for i,transition in ipairs(transitions.sequence) do
     love.graphics.setColor(transition.color.r,
-    transition.color.g,transition.color.b,transition.increment)
+    transition.color.g,transition.color.b,transition.a+transition.increment)
     love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
     love.graphics.setColor(255,255,255)
   end
