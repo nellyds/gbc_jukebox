@@ -1,20 +1,46 @@
 dialogue = {}
 dialogue.messages = {}
-debug = require('lldebugger')
+local game_font = love.graphics.getFont()
+debug = require('src/lldebugger')
 dialogue.show_confirm = false
+local util = require('lib/util')
+local constants = require('src/constants')
 dialogue.prompt_select=1
-local constants = require('constants')
 local dialogue_state = {
   DIALOGUE="dialogue",
   PROMPT="prompt"
 }
+dialogue.menu_state = constants.CLOSED
+dialogue.y_offset = 600
+dialogue.y_offset_close = 600
+dialogue.y_offset_open = 448
+dialogue.anim_time = 0
 function dialogue:dialogue_update(dt)
-  -- This function is called from player_update when key is pressed
+  self.anim_time = self.anim_time + 10
+  if (self.anim_time % 60 == 0) then
+    self.anim_time = 0
+  end
+    if self.menu_state == constants.OPENING then
+    if self.anim_time % 20 == 0 then
+      self.y_offset = self.y_offset - 10
+    end
+    if self.y_offset <= self.y_offset_open then
+      self.menu_state = constants.OPEN
+      self.y_offset = self.y_offset_open
+    end
+  elseif self.menu_state ==constants.CLOSING then 
+    self.y_offset = self.y_offset + 5
+    if self.y_offset >= self.y_offset_close then
+      self.y_offset = self.y_offset_close
+      self.menu_state = constants.CLOSED
+    end
+  end
 end
 
 
 function dialogue:dialogue_draw(dt)
    if #self.messages >0 then
+          util.draw_rect(4,self.y_offset, 634, 128, 6,{r=100,g=165,b=255})
     if self.messages[1].type == "message" then
       self.state = dialogue_state.DIALOGUE
       self:draw_message()
@@ -53,6 +79,9 @@ function dialogue:handle_keypress(key)
   elseif self.state == dialogue_state.DIALOGUE then
     if key == "return" or key==constants.BUTTON_ONE then
       table.remove(self.messages, 1)
+      if #self.messages == 0 then
+        _G.game_state_manager:change_state(constants.PL_ACT)
+      end
     end
   end
 end
@@ -60,19 +89,18 @@ end
 function dialogue:draw_message()
     self.show_confirm = true
     love.graphics.setColor(255,255,255)
-    love.graphics.rectangle("fill",25,395,2005,50)
-    love.graphics.setColor(0,0,0)
-    love.graphics.printf(self.messages[1].text,30,400,200,"center")
+    love.graphics.setFont(love.graphics.newFont("assets/game_font.ttf",18))
+    love.graphics.printf(self.messages[1].text,20,self.y_offset+22,600,"center")
+    love.graphics.setColor(255,255,255)
+    love.graphics.setFont(game_font)
 
 end
 function dialogue:draw_prompt()
   self.show_confirm = false
     love.graphics.setColor(255,255,255)
-    love.graphics.rectangle("fill",25,395,2005,50)
-    love.graphics.setColor(0,0,0)
     love.graphics.printf(self.messages[1].text,30,400,200,"center")
   for i,option in ipairs(self.messages[1].options) do
-    love.graphics.printf(option.text,40 +(40*i),430,200,"center")
+    love.graphics.printf(option.text,40 +(40*i),self.y_offset+22,200,"center")
   end  
   love.graphics.printf(">",10 +(50*self.prompt_select),430,200,"center")
 end

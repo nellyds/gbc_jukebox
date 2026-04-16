@@ -1,23 +1,23 @@
 player = {}
-player.x = 100
-player.y = 100
+player.x = 256
+player.y = 270
 player.d=constants.DIR_RIGHT
 player.dx=0
 player.dy=0
 player.w=64
 player.h=64
+player.col = "player"
 player.state = constants.PL_IDLE
-
 local anim8 = require('lib/anim8')
-debug = require('lldebugger')
-local dialogue = require('dialogue')
-local constants = require('constants')
-local game_state_manager = require('game_state_manager')
-local player_state_manager = require('player_state_manager')
-local pl_act = require('game_states/pl_act')
-local player_menu = require('game_states/player_menu')
-local stack_menu = require('game_states/stack_menu')
-local dialogue_menu = require('game_states/dialogue_menu')
+debug = require('src/lldebugger')
+local dialogue = require('src/dialogue')
+local constants = require('src/constants')
+local game_state_manager = require('src/game_state_manager')
+local player_state_manager = require('src/player_state_manager')
+local pl_act = require('src/game_states/pl_act')
+local player_menu = require('src/game_states/player_menu')
+local stack_menu = require('src/game_states/stack_menu')
+local dialogue_menu = require('src/game_states/dialogue_menu')
 local img = love.graphics.newImage("sprites/record.png")
 local idle_sheet = love.graphics.newImage("sprites/player/player_idle_sheet.png")
 local walk_sheet = love.graphics.newImage("sprites/player/player_walk_sheet.png")
@@ -128,8 +128,10 @@ end
 function player:handle_keypress(key)
     if key==constants.BUTTON_ONE then
         if _G.game.state==constants.DIALOGUE then
+            debug.print("Removing dialogue message")
             table.remove(dialogue.messages,1)
             if #dialogue.messages == 0 then
+                debug.print("No more dialogue messages, returning to PL_ACT")
                 game_state_manager:change_state(constants.PL_ACT)
                 player_state_manager:change_state(constants.PL_IDLE)
             end
@@ -149,17 +151,27 @@ function player:handle_keypress(key)
     end
 end
 
+function player:_get_keys(t)
+    local keys = {}
+    for k, v in pairs(t) do
+        table.insert(keys, k)
+    end
+    return keys
+end
+
 function player:_check_space(cols,len) 
     if len ~= nil and len > 0 then
             for i=1,len do
-                if cols[i].type=="int_obj" then
-                player_state_manager:change_state(constants.PL_IDLE) 
-                game_state_manager:change_state(constants.DIALOGUE)
-                        dialogue:add_message(cols[i].text)
-                elseif cols[i].type==constants.STACK_MENU then
+                local col_val = tostring(cols[i].col)
+                if col_val=="int_obj" then
+                    player_state_manager:change_state(constants.PL_IDLE) 
+                    game_state_manager:change_state(constants.DIALOGUE)
+                    dialogue:add_message(cols[i].text)
+                elseif col_val==constants.RECORD_STACK then
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.STACK_MENU)
-                elseif cols[i].type==constants.PLAYER_MENU then
+                    cols[i].menu_open=true
+                elseif col_val==constants.RECORD_PLAYER and player.carrying_song ~= nil then
                     player_state_manager:change_state(constants.PL_IDLE) 
                     game_state_manager:change_state(constants.PLAYER_MENU)
                     cols[i].menu_open=true
@@ -170,7 +182,7 @@ end
 
 function player:col_filter(player, other)
     if other then
-        return other.col
+        return other.type
     else return nil
     end
 

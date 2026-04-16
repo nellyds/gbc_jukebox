@@ -1,4 +1,4 @@
-constants = require('constants')
+constants = require('src/constants')
 pl_move = {}
 pl_move.state = constants.PL_MOVE
 function pl_move:on_state_enter()

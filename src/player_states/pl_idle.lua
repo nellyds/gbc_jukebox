@@ -1,4 +1,4 @@
-constants = require('constants')
+constants = require('src/constants')
 pl_idle = {}
 pl_idle.state = constants.PL_IDLE
 function pl_idle:on_state_enter()

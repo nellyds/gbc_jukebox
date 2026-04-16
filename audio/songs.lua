@@ -1,8 +1,8 @@
 songs = {}
 songs.list = {}
 songFiles = {
-  {name="The World has turned and left me here",path="audio/TheWorldHasTurnedAndLeftMeHere.wav",key="worldTurned"},
-  {name="Gun Star Heroes-Stage 1",path="audio/Gunstar_Heroes_Stage_one.wav",key="gunstar"},
+  {name="The World Has Turned and Left Me Here",path="audio/TheWorldHasTurnedAndLeftMeHere.wav",key="worldTurned"},
+  {name="Gun Star Heroes -Stage 1",path="audio/Gunstar_Heroes_Stage_one.wav",key="gunstar"},
   {name="Bloodlines -Reincarnated Souls",path="audio/Bloodlines_Reincarnated_Souls.wav",key="boodlines"},
   {name="American Football -Never Meant",path="audio/American_Football_Never_Meant.wav",key="americanFootball"},
   {name="Terranigma -Underworld",path="audio/Terranigma_Underworld.wav",key="terranigma"},
@@ -19,6 +19,5 @@ function songs:load_songs()
         end
         table.insert(self.list,{name = song.name, source = source,key=song.key})
     end
-    print("All songs loaded.")
 end
 return songs

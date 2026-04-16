@@ -1,40 +1,51 @@
+local constants = require('src/constants')
+local debug = require('src/lldebugger')
+
 record_stack = {}
 record_stack.x=192
 record_stack.y=64
 record_stack.w=64
 record_stack.h=64
+record_stack.anim_time=0
 record_stack.menu_select=1
 record_stack.text="My stack of records"
-record_stack.type=constants.STACK_MENU
+record_stack.type="slide"
+record_stack.col=constants.RECORD_STACK
 record_stack.carrying_song = nil
 record_stack.menu_open=false
-local constants = require('constants')
-local debug = require('lldebugger')
 local stack_state = {
   OPENING="opening",
   CLOSING="closing",
   OPEN="open",
   CLOSED="closed"
 }
+local cursor_move = love.audio.newSource("audio/cursor_move.wav", "static")
+local cursor_select = love.audio.newSource("audio/cursor_select.wav", "static")
 record_stack.menu_state = stack_state.CLOSED
 record_stack.y_offset=600
 record_stack.y_offset_close=600
 record_stack.y_offset_open=300
 
 local util = require('lib.util')
-local game_state_manager = require('game_state_manager')
-local player_state_manager = require('player_state_manager')
+local game_state_manager = require('src/game_state_manager')
+local player_state_manager = require('src/player_state_manager')
 local record_stack_img = love.graphics.newImage("sprites/environment/record_stack.png")
 
 function record_stack:stack_update(dt)
+  self.anim_time = self.anim_time + 10
+  if (self.anim_time % 60 == 0) then
+    self.anim_time =0
+  end
   if self.menu_state == constants.OPENING then
-    self.y_offset = self.y_offset - 8
+    if self.anim_time % 20 == 0 then
+      self.y_offset = self.y_offset - 10
+    end
     if self.y_offset <= self.y_offset_open then
       self.menu_state = constants.OPEN
       self.y_offset = self.y_offset_open
     end
   elseif self.menu_state ==constants.CLOSING then 
-    self.y_offset = self.y_offset + 8
+    self.y_offset = self.y_offset + 5
     if self.y_offset >= self.y_offset_close then
       self.y_offset = self.y_offset_close
       self.menu_state = stack_state.CLOSED
@@ -69,12 +80,15 @@ end
 function record_stack:handle_keypress(key)
     if key=="up" and self.menu_select > 1 then
         self.menu_select = self.menu_select - 1
+        love.audio.play(cursor_move)
     elseif key=="down" and self.menu_select < #_G.songs.list then
         self.menu_select = self.menu_select + 1
+        love.audio.play(cursor_move)
     elseif key==constants.BUTTON_ONE then
       record_stack:select_record()
     elseif key==constants.BUTTON_TWO then
       self.menu_state = constants.CLOSING
+   love.audio.play(cursor_select)
       player_state_manager:change_state(constants.PL__CARRY_IDLE) 
       game_state_manager:change_state(constants.PL_ACT)
     end
@@ -84,18 +98,19 @@ function record_stack:select_record()
   if self.menu_select < #_G.songs.list then
      _G.player.carrying_song = _G.songs.list[self.menu_select]
     self.menu_state = constants.CLOSING
-
+    love.audio.play(cursor_select)
      player_state_manager:change_state(constants.PL_CARRY_IDLE)
      game_state_manager:change_state(constants.PL_ACT)
   else
     self.menu_state = constants.CLOSING
+    love.audio.play(cursor_select)
      player_state_manager:change_state(constants.PL_IDLE)
      game_state_manager:change_state(constants.PL_ACT)
   end
 end
 
 function record_stack:draw_record_stack()
-  love.graphics.draw(record_stack_img, self.x, self.y)
+ -- love.graphics.draw(record_stack_img, self.x, self.y)
 end
 
 return record_stack
