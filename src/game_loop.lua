@@ -14,6 +14,12 @@ function game_loop:update(dt,world)
   dialogue:dialogue_update(dt)
   record_stack:stack_update(dt)
   record_player:record_player_update(dt)
+  
+  -- Update lighting based on player position
+  if _G.game_lighting then
+    _G.game_lighting:update(player.x, player.y)
+  end
+  
   if game.state == constants.ROOM_TRANSITION then
     room_transition:update(dt, game.room)
   end
@@ -53,8 +59,12 @@ function game_loop:draw()
     record_stack:draw_record_stack()
     record_stack:draw_song_menu()
     dialogue:dialogue_draw(dt)
-
     record_player:draw_player_menu()
+    
+    -- Draw lighting effect on top
+    if _G.game_lighting and game.state ~= constants.TITLE_MENU then
+      _G.game_lighting:draw()
+    end
 end
 
 return game_loop

@@ -31,9 +31,13 @@ function love.load()
   game.room = constants.ROOM_1
   songs = require('audio/songs')
   game_world = require('src/game_world')
+  lighting = require('src/lighting')
   songs:load_songs()
   world = bump.newWorld(50)
   _init_world(world,room_objects)
+  
+  -- Initialize lighting system
+  game_lighting = lighting.new(150, 0.9)
 
 end
 
